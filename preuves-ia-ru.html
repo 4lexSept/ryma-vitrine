@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Что на самом деле приносит ИИ интернет-магазину | Ryma</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Реальные результаты, опубликованные крупнейшими платформами отрасли. Что ИИ приносит интернет-магазину: продажи и поддержка клиентов. Цифры проверяются в один клик.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Что на самом деле приносит ИИ интернет-магазину">
+<meta property="og:description" content="Реальные цифры, опубликованные крупнейшими платформами отрасли. Проверяются в один клик. И почему Ryma делает это за долю цены.">
+<meta property="og:url" content="https://4lexsept.github.io/ryma-vitrine/preuves-ia-ru.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4EFE8; --cream-deep:#EBE3D5;
+    --rose:#DE8F84; --rose-dk:#AE5D54; --rose-soft:#F3D9D2;
+    --gold:#C9A96A; --olive:#4F7C66; --olive-dk:#3C5F4E;
+    --ink:#241C1A; --ink-soft:#5C544A;
+    --dark:#211917; --dark-2:#2E2320;
+    --line:rgba(36,28,26,.12);
+    --shadow:0 18px 50px rgba(36,28,26,.10);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:var(--sans); font-size:17px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px; margin:0 auto; padding:0 22px}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; line-height:1.14; letter-spacing:-.01em; margin:0}
+  a{color:var(--rose-dk)}
+  .eyebrow{font-size:12.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--rose-dk); font-weight:700; font-family:var(--sans)}
+
+  /* Top bar */
+  .top{position:sticky; top:0; z-index:20; background:rgba(244,239,232,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex; align-items:center; justify-content:space-between; height:60px}
+  .word{font-family:var(--serif); font-weight:700; font-size:23px; letter-spacing:-.02em}
+  .word .dot{color:var(--rose)}
+  .top .tag{font-size:13px; color:var(--ink-soft)}
+
+  /* Hero */
+  .hero{position:relative; overflow:hidden; background:radial-gradient(120% 90% at 50% -10%, #3a2a26 0%, var(--dark) 55%, #1b1513 100%); color:#F6EFE9; padding:76px 0 84px}
+  .hero:before{content:""; position:absolute; top:-30%; left:50%; transform:translateX(-50%); width:760px; height:520px; background:radial-gradient(circle, rgba(222,143,132,.42) 0%, rgba(222,143,132,0) 66%); filter:blur(12px); pointer-events:none}
+  .hero .wrap{position:relative}
+  .hero h1{font-size:clamp(32px,5vw,54px); color:#FBF6F1; max-width:20ch}
+  .hero .sub{margin-top:20px; font-size:clamp(17px,2.1vw,20px); color:#E7D8CF; max-width:62ch}
+  .hero .eyebrow{color:var(--rose-soft)}
+  .stats{display:flex; flex-wrap:wrap; gap:14px; margin-top:38px}
+  .stat{flex:1 1 200px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.14); border-radius:16px; padding:20px 22px}
+  .stat .n{font-family:var(--serif); font-weight:700; font-size:clamp(30px,4vw,42px); color:#fff; line-height:1}
+  .stat .l{margin-top:8px; font-size:14.5px; color:#E7D8CF}
+
+  /* Sections */
+  section{padding:64px 0}
+  .lead{max-width:66ch}
+  .sec-head .eyebrow{display:block; margin-bottom:12px}
+  .sec-head h2{font-size:clamp(26px,3.4vw,38px)}
+  .sec-head p{color:var(--ink-soft); max-width:64ch; margin:16px 0 0}
+
+  /* Proof cards */
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:34px}
+  .card{background:#fff; border:1px solid var(--line); border-radius:20px; padding:26px 26px 22px; box-shadow:var(--shadow); position:relative}
+  .card .who{font-size:13px; font-weight:700; letter-spacing:.02em; color:var(--rose-dk); text-transform:uppercase}
+  .card .big{font-family:var(--serif); font-weight:700; font-size:clamp(28px,4vw,38px); line-height:1.04; margin:10px 0 2px; color:var(--ink)}
+  .card .plain{font-size:15.5px; color:var(--ink); margin:10px 0 0}
+  .card .plain b{color:var(--rose-dk)}
+  .card .src{display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:2px}
+  .card .src:hover{color:var(--rose-dk); border-color:var(--rose)}
+  .card .src .ext{opacity:.6}
+
+  /* Band */
+  .band{background:var(--cream-deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .band .row{display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:center}
+  .band .item .n{font-family:var(--serif); font-weight:700; font-size:clamp(23px,3vw,31px); color:var(--olive-dk)}
+  .band .item p{margin:6px 0 0; color:var(--ink-soft); font-size:15.5px}
+  .band .item a{font-size:13px; color:var(--ink-soft)}
+
+  /* Value two blocks */
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:34px}
+  .val{background:#fff; border:1px solid var(--line); border-radius:20px; padding:30px; box-shadow:var(--shadow)}
+  .val .k{font-family:var(--serif); font-size:24px; font-weight:600; color:var(--ink); margin-bottom:12px}
+  .val .k .ic{color:var(--rose)}
+  .val p{margin:0; color:var(--ink); font-size:15.5px}
+
+  /* Price section */
+  .price{background:linear-gradient(180deg,#241C1A 0%, #2E2320 100%); color:#F6EFE9}
+  .price .eyebrow{color:var(--rose-soft)}
+  .price h2{color:#FBF6F1; font-size:clamp(26px,3.4vw,38px)}
+  .price .scen{color:#E7D8CF; max-width:64ch; margin-top:16px}
+  .price .scen b{color:#fff}
+  .chart{margin-top:40px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:30px 28px}
+  .bar-row{margin:0 0 22px}
+  .bar-row:last-child{margin-bottom:0}
+  .bar-top{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:9px; gap:12px}
+  .bar-name{font-weight:700; font-size:16px; color:#FBF6F1}
+  .bar-amt{font-family:var(--serif); font-weight:700; font-size:19px; color:#fff; white-space:nowrap}
+  .bar-track{height:30px; background:rgba(255,255,255,.07); border-radius:8px; overflow:hidden; display:flex}
+  .seg{height:100%; width:0; transition:width 1.2s cubic-bezier(.22,.61,.36,1)}
+  .seg.conseil{background:#E3A79E}
+  .seg.sav{background:#A8514A}
+  .ours .seg.conseil{background:#6FBF9A}
+  .ours .seg.sav{background:#3C5F4E}
+  .bar-detail{margin-top:8px; font-size:13px; color:#C9B9AE}
+  .bar-detail b{color:#F6E7DF; font-weight:600}
+  .legend{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:26px; font-size:13.5px; color:#E7D8CF}
+  .legend .k{display:inline-flex; align-items:center; gap:8px}
+  .legend .sw{width:15px; height:15px; border-radius:4px; display:inline-block}
+  .bar-row.ours .bar-name{color:#8FE0BC}
+  .badge-us{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.10em; background:var(--olive); color:#fff; padding:2px 9px; border-radius:20px; margin-left:8px; vertical-align:middle}
+  .note{margin-top:26px; font-size:13.5px; color:#C9B9AE; line-height:1.55; border-top:1px solid rgba(255,255,255,.12); padding-top:20px}
+  .note b{color:#F3D9D2}
+
+  /* Sanctions section */
+  .sanc{background:var(--cream)}
+  .sanc .box{background:#fff; border:1px solid var(--line); border-left:5px solid var(--rose-dk); border-radius:16px; padding:26px 28px; margin-top:22px; box-shadow:var(--shadow)}
+  .sanc .box.us{border-left-color:var(--olive)}
+  .sanc .box h3{font-size:21px; margin-bottom:10px}
+  .sanc .box p{margin:0; color:var(--ink); font-size:16px}
+  .sanc .lead b{color:var(--rose-dk)}
+  .langs{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap}
+  .lang{background:var(--olive); color:#fff; font-weight:700; padding:10px 22px; border-radius:30px; font-size:16px; letter-spacing:.02em}
+
+  /* Ryma close */
+  .close{background:radial-gradient(120% 100% at 50% 0%, #34534380 0%, transparent 60%), var(--cream-deep); text-align:center; border-top:1px solid var(--line)}
+  .close h2{font-size:clamp(28px,3.8vw,42px); max-width:22ch; margin:0 auto}
+  .close p{max-width:58ch; margin:20px auto 0; color:var(--ink); font-size:17.5px}
+  .close .bm{display:inline-block; margin-top:26px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px 26px; box-shadow:var(--shadow); font-size:16px}
+  .close .bm b{color:var(--rose-dk)}
+  .cta{display:inline-block; margin-top:30px; background:var(--ink); color:#FBF6F1; text-decoration:none; font-weight:700; padding:16px 34px; border-radius:40px; font-size:16.5px; transition:transform .2s, background .2s}
+  .cta:hover{transform:translateY(-2px); background:#000}
+
+  /* Sources / footer */
+  footer{background:var(--dark); color:#D9CBC2; padding:50px 0 40px; font-size:14px}
+  footer h4{font-family:var(--sans); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:#C9B9AE; margin:0 0 16px}
+  footer ul{list-style:none; padding:0; margin:0; columns:2; column-gap:34px}
+  footer li{margin:0 0 9px; break-inside:avoid}
+  footer a{color:#E7D8CF; text-decoration:none; border-bottom:1px solid rgba(255,255,255,.18)}
+  footer a:hover{color:#fff}
+  footer .fine{margin-top:26px; padding-top:20px; border-top:1px solid rgba(255,255,255,.12); color:#9C8E85; font-size:12.5px; line-height:1.6}
+  .word-f{font-family:var(--serif); font-weight:700; font-size:20px; color:#fff}
+  .word-f .dot{color:var(--rose)}
+
+  /* Reveal */
+  .rv{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s cubic-bezier(.22,.61,.36,1)}
+  .rv.in{opacity:1; transform:none}
+
+  @media (max-width:760px){
+    body{font-size:16px}
+    .grid,.two,.band .row{grid-template-columns:1fr}
+    footer ul{columns:1}
+    .hero{padding:60px 0 64px}
+    section{padding:52px 0}
+    .stat{flex-basis:100%}
+    .bar-amt{font-size:17px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1; transform:none; transition:none}
+    .seg{transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <span class="word">Ryma<span class="dot">.</span></span>
+    <span class="tag">Доказательства в цифрах</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Реальные цифры, а не обещания</span>
+    <h1>Что на самом деле приносит ИИ интернет-магазину</h1>
+    <p class="sub">Приведённые ниже результаты опубликованы крупнейшими платформами отрасли по их собственным клиентам. Каждую цифру можно проверить в один клик, прямо на сайте партнёра.</p>
+    <div class="stats">
+      <div class="stat"><div class="n"><span class="cu" data-to="3" data-pre="x">x0</span></div><div class="l">рост конверсии с ИИ-консультантом (косметика)</div></div>
+      <div class="stat"><div class="n"><span class="cu" data-to="943" data-suf="%">0%</span></div><div class="l">окупаемость инвестиций в службе поддержки (косметика)</div></div>
+      <div class="stat"><div class="n"><span class="cu" data-to="10" data-suf="x">0x</span></div><div class="l">до 10 раз дешевле других за ту же работу</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- INTRO -->
+<section style="padding-bottom:20px">
+  <div class="wrap">
+    <p class="lead" style="font-size:19px">ИИ приносит деньги интернет-магазину в двух местах: <b>консультант, который продаёт</b>, до покупки, и <b>служба поддержки, которая работает сама</b>, после покупки. Вот доказательства, простыми словами.</p>
+  </div>
+</section>
+
+<!-- SECTION 1: VENTE -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">До покупки</span>
+      <h2>Консультант, который продаёт</h2>
+      <p>ИИ сопровождает посетителя как ваш лучший продавец в магазине: слушает, понимает потребность, рекомендует нужный товар и снимает сомнения. Результат: посетитель уходит с нужным товаром, а не покидает сайт с пустыми руками.</p>
+    </div>
+    <div class="grid">
+      <div class="card rv">
+        <div class="who">Braun · уход и красота</div>
+        <div class="big">18% выручки</div>
+        <div class="plain">За 8 месяцев <b>почти каждая 5-я продажа</b> сгенерирована ИИ-консультантом. Плюс: <b>+22% к среднему чеку</b> у новых клиентов и <b>+28% к конверсии</b> у вернувшихся.</div>
+        <a class="src" href="https://insiderone.com/ai-shopping-agents-drive-conversions-revenue/" target="_blank" rel="noopener">Смотреть кейс Braun на insiderone.com <span class="ext">&#8599;</span></a>
+      </div>
+      <div class="card rv">
+        <div class="who">Oh My Cream · косметика</div>
+        <div class="big">В 3 раза больше покупателей</div>
+        <div class="plain">У этого косметического бренда <b>конверсия выросла в 3 раза</b>. ИИ-консультант воспроизводит онлайн бьюти-диагностику, которую раньше делали только в магазине.</div>
+        <a class="src" href="https://www.askdialog.com/customers/oh-my-cream" target="_blank" rel="noopener">Смотреть кейс Oh My Cream на askdialog.com <span class="ext">&#8599;</span></a>
+      </div>
+      <div class="card rv">
+        <div class="who">Pepper</div>
+        <div class="big">1 &euro; вложен, 19 &euro; продаж</div>
+        <div class="plain"><b>Окупаемость в 19,2 раза</b> на продажах с ИИ и <b>+18% к среднему чеку</b>. Почти каждый 5-й посетитель покупает после разговора с консультантом.</div>
+        <a class="src" href="https://www.gorgias.com/customers/pepper" target="_blank" rel="noopener">Смотреть кейс Pepper на gorgias.com <span class="ext">&#8599;</span></a>
+      </div>
+      <div class="card rv">
+        <div class="who">Arc'teryx</div>
+        <div class="big">1 &euro; вложен, 23 &euro; продаж</div>
+        <div class="plain"><b>Окупаемость в 23 раза</b> на ИИ и <b>+75% посетителей</b>, доходящих до покупки.</div>
+        <a class="src" href="https://www.gorgias.com/customers/arcteryx" target="_blank" rel="noopener">Смотреть кейс Arc'teryx на gorgias.com <span class="ext">&#8599;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: SAV -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">После покупки</span>
+      <h2>Служба поддержки, которая работает сама</h2>
+      <p>ИИ отвечает на все вопросы после продажи (где мой заказ, возврат, обмен, как пользоваться) мгновенно, круглосуточно, без ожидания. Результат: команда освобождена от рутины, клиенты довольны, а расходы снижаются.</p>
+    </div>
+    <div class="grid">
+      <div class="card rv">
+        <div class="who">IPSY · косметика</div>
+        <div class="big">Почти 10-кратный возврат</div>
+        <div class="plain"><b>943% окупаемости инвестиций</b>. ИИ <b>самостоятельно закрыл около 160 000 обращений</b>, а удовлетворённость клиентов выросла на <b>+41%</b>.</div>
+        <a class="src" href="https://www.ada.cx/blog/ipsy-ai-customer-service-agent-ecommerce/" target="_blank" rel="noopener">Смотреть кейс IPSY на ada.cx <span class="ext">&#8599;</span></a>
+      </div>
+      <div class="card rv">
+        <div class="who">Simba</div>
+        <div class="big">600 000 &pound; / мес</div>
+        <div class="plain">Автоматизировав поддержку, бренд <b>разблокировал более 600 000 &pound; выручки в месяц</b>, обслуживая клиентов по всему миру.</div>
+        <a class="src" href="https://www.ada.cx/case-studies/" target="_blank" rel="noopener">Смотреть кейсы на ada.cx <span class="ext">&#8599;</span></a>
+      </div>
+      <div class="card rv">
+        <div class="who">Dr. Bronner's · натуральная косметика</div>
+        <div class="big">100 000 $ экономии в год</div>
+        <div class="plain"><b>100 000 $ экономии в год</b> на поддержке, при этом <b>45% обращений ИИ обрабатывает автоматически</b>.</div>
+        <a class="src" href="https://www.gorgias.com/customers/dr-bronners" target="_blank" rel="noopener">Смотреть кейс Dr. Bronner's на gorgias.com <span class="ext">&#8599;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BAND: not isolated -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head rv" style="margin-bottom:26px"><span class="eyebrow">И это не единичные случаи</span></div>
+    <div class="row">
+      <div class="item rv">
+        <div class="n"><span class="cu" data-to="4" data-suf=",2x">0x</span> средняя окупаемость</div>
+        <p>У Gorgias по более чем 17 000 брендам, при этом <b>до 60% обращений обрабатывает ИИ</b>.</p>
+        <a href="https://www.gorgias.com/" target="_blank" rel="noopener">gorgias.com</a>
+      </div>
+      <div class="item rv">
+        <div class="n"><span class="cu" data-to="84" data-suf="%">0%</span> обращений решаются сами</div>
+        <p>У Ada, по <b>6,4 млрд клиентских обращений</b>.</p>
+        <a href="https://www.ada.cx/" target="_blank" rel="noopener">ada.cx</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE two blocks -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Проще говоря</span>
+      <h2>Настоящая ценность в двух местах</h2>
+    </div>
+    <div class="two">
+      <div class="val rv">
+        <div class="k"><span class="ic">&#10022;</span> Консультант</div>
+        <p>Это не форма и не автоматическое меню. Это онлайн-версия вашего лучшего продавца: слушает, понимает, что ищет человек, рекомендует нужный товар и снимает сомнения. На сайте большинство посетителей уходят без покупки, часто потому что их никто не направил. Консультант возвращает часть этих потерянных продаж.</p>
+      </div>
+      <div class="val rv">
+        <div class="k"><span class="ic">&#10022;</span> Служба поддержки</div>
+        <p>После покупки у клиентов возникают вопросы, и они приходят в любое время. ИИ отвечает сразу, без ожидания и без выходных. Команда занимается только действительно особыми случаями. Клиентов обслуживают лучше и быстрее, а расходы на поддержку заметно снижаются.</p>
+      </div>
+    </div>
+    <p class="lead rv" style="margin-top:26px; font-size:18px">Вместе это магазин, который <b>продаёт лучше</b> и <b>обслуживает лучше</b>, не расширяя команду.</p>
+  </div>
+</section>
+
+<!-- PRICE -->
+<section class="price">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Та же работа за долю цены</span>
+      <h2>Стоимость в месяц: у других и у нас</h2>
+      <p class="scen">Возьмём конкретный пример: <b>30 000 обращений в месяц</b> (15 000 на бьюти-консультации до покупки, 15 000 на поддержку после покупки). Вот <b>стоимость в месяц</b>, с разбивкой на консультанта и поддержку, для решений, которые действительно делают и то и другое.</p>
+    </div>
+
+    <div class="chart rv">
+      <div class="legend">
+        <span class="k"><span class="sw" style="background:#E3A79E"></span> Бьюти-консультант</span>
+        <span class="k"><span class="sw" style="background:#A8514A"></span> Служба поддержки</span>
+        <span class="k" style="color:#8FE0BC; font-weight:600">Ryma показана зелёным</span>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-top"><div class="bar-name">Gorgias</div><div class="bar-amt">~54 000 $/мес</div></div>
+        <div class="bar-track"><div class="seg conseil" data-w="50"></div><div class="seg sav" data-w="50"></div></div>
+        <div class="bar-detail">Бьюти-консультант <b>~27 000 $</b> · Поддержка <b>~27 000 $</b></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-top"><div class="bar-name">Rep AI</div><div class="bar-amt">~22 500 $/мес</div></div>
+        <div class="bar-track"><div class="seg conseil" data-w="20.83"></div><div class="seg sav" data-w="20.83"></div></div>
+        <div class="bar-detail">Бьюти-консультант <b>~11 250 $</b> · Поддержка <b>~11 250 $</b></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-top"><div class="bar-name">Yuma</div><div class="bar-amt">~20 000 $/мес</div></div>
+        <div class="bar-track"><div class="seg conseil" data-w="18.52"></div><div class="seg sav" data-w="18.52"></div></div>
+        <div class="bar-detail">Бьюти-консультант <b>~10 000 $</b> · Поддержка <b>~10 000 $</b></div>
+      </div>
+      <div class="bar-row ours">
+        <div class="bar-top"><div class="bar-name">Ryma <span class="badge-us">МЫ</span></div><div class="bar-amt">5 500 $/мес</div></div>
+        <div class="bar-track"><div class="seg conseil" data-w="2.78"></div><div class="seg sav" data-w="7.41"></div></div>
+        <div class="bar-detail">Бьюти-консультант <b>1 500 $</b> · Поддержка <b>4 000 $</b>, фиксированная цена на объём от 30 000 до 50 000 обращений</div>
+      </div>
+
+      <div class="note">
+        <b>Как читать.</b> Каждая полоса показывает стоимость в месяц, разделённую между бьюти-консультантом (до покупки) и службой поддержки (после покупки). У конкурентов и то и другое тарифицируется за обращение, по одной ставке: чем больше клиентов, тем выше счёт. У Ryma это фиксированная цена, покрывающая от 30 000 до 50 000 обращений в месяц, и она не растёт с объёмом. Суммы конкурентов взяты из их публичных тарифов; крупные клиенты иногда договариваются о скидках, но разрыв с Ryma остаётся не менее чем 10-кратным по сравнению с самым дорогим. Внедрение у Ryma разовое (около 3 000 $), у остальных по запросу.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SANCTIONS / RUSSE -->
+<section class="sanc">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Момент, который меняет всё для вас</span>
+      <h2>Они не могут работать с вами. Мы можем.</h2>
+      <p class="lead">Все упомянутые выше платформы <b>американские или европейские</b>. Для компании, работающей на российском рынке, это не мелочь, а стена.</p>
+    </div>
+
+    <div class="box rv">
+      <h3>Стена санкций</h3>
+      <p>Международные санкции запрещают этим компаниям работать с бизнесом, активным на российском рынке: невозможно открыть счёт, получить счёт на оплату или пользоваться их технологией. А американский искусственный интеллект, на котором работает большинство из них, тоже закрыт для России. По сути, даже при желании вы не смогли бы ими воспользоваться.</p>
+    </div>
+
+    <div class="box us rv">
+      <h3>У Ryma нет этих ограничений</h3>
+      <p>Наш искусственный интеллект прекрасно работает на русском языке, в нашей команде есть русскоговорящий сотрудник, и мы создаём вашего консультанта на языке ваших клиентов. Вы выбираете:</p>
+      <div class="langs">
+        <span class="lang">Русский</span>
+        <span class="lang">Английский</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RYMA CLOSE -->
+<section class="close">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow" style="color:var(--rose-dk)">А мы?</span>
+      <h2 style="margin-top:14px">Ryma делает именно это, за долю цены</h2>
+      <p>Тот же консультант, который продаёт и ведёт поддержку, адаптированный под ваш бренд и ваш рынок. Сопровождение под ключ, а не инструмент, который нужно настраивать самому.</p>
+      <div class="bm">Ryma уже делает это для <b>Beautymarket, лидера парафармацевтики номер один в Марокко</b>, который нам доверился.</div>
+      <div><a class="cta" href="https://ryma.app" target="_blank" rel="noopener">Обсудить ваш проект с нами</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="word-f">Ryma<span class="dot">.</span></span>
+    <h4 style="margin-top:26px">Источники, проверено 15 июля 2026</h4>
+    <ul>
+      <li>Braun (Insider) : <a href="https://insiderone.com/ai-shopping-agents-drive-conversions-revenue/" target="_blank" rel="noopener">insiderone.com</a></li>
+      <li>Oh My Cream (Dialog) : <a href="https://www.askdialog.com/customers/oh-my-cream" target="_blank" rel="noopener">askdialog.com</a></li>
+      <li>Pepper (Gorgias) : <a href="https://www.gorgias.com/customers/pepper" target="_blank" rel="noopener">gorgias.com</a></li>
+      <li>Arc'teryx (Gorgias) : <a href="https://www.gorgias.com/customers/arcteryx" target="_blank" rel="noopener">gorgias.com</a></li>
+      <li>IPSY (Ada) : <a href="https://www.ada.cx/blog/ipsy-ai-customer-service-agent-ecommerce/" target="_blank" rel="noopener">ada.cx</a></li>
+      <li>Simba (Ada) : <a href="https://www.ada.cx/case-studies/" target="_blank" rel="noopener">ada.cx</a></li>
+      <li>Dr. Bronner's (Gorgias) : <a href="https://www.gorgias.com/customers/dr-bronners" target="_blank" rel="noopener">gorgias.com</a></li>
+      <li>Средние Gorgias : <a href="https://www.gorgias.com/" target="_blank" rel="noopener">gorgias.com</a></li>
+      <li>Средние Ada : <a href="https://www.ada.cx/" target="_blank" rel="noopener">ada.cx</a></li>
+    </ul>
+    <p class="fine">Приведённые цифры опубликованы каждой платформой по её собственным клиентам, ссылки выше для проверки. Сравнение цен основано на публичных тарифах каждого игрока для объёма 30 000 обращений в месяц. Документ подготовлен Ryma в справочных целях.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var rvs = [].slice.call(document.querySelectorAll('.rv'));
+  if(reduce || !('IntersectionObserver' in window)){
+    rvs.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.16});
+    rvs.forEach(function(el){ io.observe(el); });
+  }
+
+  function countUp(el){
+    var to = parseFloat(el.getAttribute('data-to'));
+    var pre = el.getAttribute('data-pre') || '';
+    var suf = el.getAttribute('data-suf') || '';
+    if(reduce){ el.textContent = pre + to + suf; return; }
+    var dur = 1200, start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var eased = 1 - Math.pow(1-p, 3);
+      var val = to * eased;
+      var disp = (to % 1 === 0) ? Math.round(val) : val.toFixed(1);
+      el.textContent = pre + disp + suf;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var cus = [].slice.call(document.querySelectorAll('.cu'));
+  if(!('IntersectionObserver' in window)){
+    cus.forEach(countUp);
+  } else {
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ countUp(e.target); io2.unobserve(e.target); } });
+    }, {threshold:.6});
+    cus.forEach(function(el){ io2.observe(el); });
+  }
+
+  var bars = [].slice.call(document.querySelectorAll('.seg'));
+  function fill(el){ el.style.width = el.getAttribute('data-w') + '%'; }
+  if(reduce || !('IntersectionObserver' in window)){
+    bars.forEach(fill);
+  } else {
+    var io3 = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ var el=e.target; setTimeout(function(){ fill(el); }, 120); io3.unobserve(el); } });
+    }, {threshold:.4});
+    bars.forEach(function(el){ io3.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>
