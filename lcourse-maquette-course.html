@@ -1,0 +1,546 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta property="og:title" content="Lcourse · Maquette interactive de la page course">
+<meta property="og:description" content="Démo interactive : verdict, raisons, fiche, Bouba et la révélation d'arrivée. Données fictives de démonstration.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://4lexsept.github.io/ryma-vitrine/lcourse-maquette-course.html">
+<title>Lcourse FR · Maquette interactive · page course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0F0C; --bg2:#0E1611; --card:#121B15; --card2:#16211A;
+    --line:#233129; --line2:#2C3D32;
+    --ink:#EFEAD9; --soft:#98A399; --dim:#5F6B62;
+    --turf:#35C284; --turf-deep:#124D33;
+    --gold:#E3B84D; --gold-deep:#8A6B1E;
+    --red:#E05A3E; --violet:#A88FE0; --blue:#6FA1E8;
+    --glass:rgba(14,22,17,.72); --glass-soft:rgba(20,30,24,.55);
+    --spring:cubic-bezier(.34,1.4,.4,1);
+    --fd:"Instrument Serif",Georgia,serif;
+    --fu:"Instrument Sans",system-ui,sans-serif;
+    --fm:"Geist Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:#050807;font-family:var(--fu);color:var(--ink);display:flex;align-items:center;justify-content:center;min-height:100vh}
+  .device{position:relative;width:390px;height:844px;background:var(--bg);border-radius:46px;border:1px solid #1E2A22;box-shadow:0 40px 120px rgba(0,0,0,.7),0 0 0 8px #0B0F0C;overflow:hidden}
+  @media (max-width:440px){body{display:block}.device{width:100%;height:100vh;height:100dvh;border-radius:0;border:none;box-shadow:none}}
+  .screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+  .screen::-webkit-scrollbar{display:none}
+
+  /* auroras */
+  .glow{position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+  .g1{top:-120px;left:-80px;background:rgba(53,194,132,.16);animation:drift1 14s ease-in-out infinite alternate}
+  .g2{top:180px;right:-140px;background:rgba(227,184,77,.10);animation:drift2 18s ease-in-out infinite alternate}
+  @keyframes drift1{to{transform:translate(60px,40px) scale(1.15)}}
+  @keyframes drift2{to{transform:translate(-70px,60px) scale(.9)}}
+
+  /* header */
+  .hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:18px 16px 10px;background:linear-gradient(180deg,rgba(10,15,12,.92),rgba(10,15,12,.65) 70%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .logo{font-family:var(--fd);font-size:21px;letter-spacing:.01em}
+  .logo i{font-style:normal;color:var(--gold)}
+  .chip{margin-left:auto;font-family:var(--fm);font-size:12px;font-weight:600;background:var(--glass-soft);border:1px solid var(--line);border-radius:999px;padding:6px 12px;backdrop-filter:blur(8px)}
+  .chip b{color:var(--gold)}
+  .proof{position:relative;z-index:2;margin:2px 16px 10px;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--soft);background:var(--glass-soft);border:1px solid var(--line);border-radius:12px;padding:8px 12px;backdrop-filter:blur(8px);cursor:pointer;transition:transform .15s var(--spring)}
+  .proof:active{transform:scale(.97)}
+  .proof b{color:var(--turf)}
+  .proof .d{width:6px;height:6px;border-radius:50%;background:var(--turf);box-shadow:0 0 10px var(--turf);flex:none;animation:blink 2.4s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+  /* race rail */
+  .rail{position:relative;z-index:2;display:flex;gap:8px;padding:4px 16px 12px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .rc{scroll-snap-align:start;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--fm);font-size:12px;font-weight:600;color:var(--soft);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 13px;cursor:pointer;transition:transform .15s var(--spring),border-color .2s,background .2s}
+  .rc small{font-size:9px;font-weight:400;color:var(--dim);letter-spacing:.04em}
+  .rc:active{transform:scale(.93)}
+  .rc.done small{color:var(--turf)}
+  .rc.skip small{color:var(--dim)}
+  .rc.live{background:linear-gradient(160deg,#173425,#10241A);border-color:var(--turf-deep);color:var(--ink);box-shadow:0 0 0 1px rgba(53,194,132,.35),0 6px 20px rgba(18,77,51,.45)}
+  .rc.live small{color:var(--turf)}
+
+  /* views */
+  .view{display:none;position:relative;z-index:2;padding-bottom:170px}
+  .view.on{display:block}
+
+  /* course hero */
+  .rhero{padding:10px 16px 2px}
+  .rname{font-family:var(--fd);font-size:30px;line-height:1.05}
+  .rmeta{font-family:var(--fm);font-size:11.5px;color:var(--soft);margin-top:6px;letter-spacing:.02em}
+  .cdwrap{display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap}
+  .cd{font-family:var(--fm);font-size:13px;font-weight:600;color:var(--turf);background:rgba(53,194,132,.09);border:1px solid rgba(53,194,132,.35);border-radius:999px;padding:7px 14px;transition:all .4s;white-space:nowrap}
+  .cd.hot{color:#FFD9CE;background:rgba(224,90,62,.14);border-color:rgba(224,90,62,.55);animation:hotpulse 1.2s infinite}
+  @keyframes hotpulse{0%,100%{box-shadow:0 0 0 0 rgba(224,90,62,.35)}50%{box-shadow:0 0 0 7px rgba(224,90,62,0)}}
+  .lm{font-family:var(--fm);font-size:10.5px;color:var(--red);border:1px dashed rgba(224,90,62,.5);border-radius:999px;padding:6px 11px;animation:blink 2s infinite;white-space:nowrap}
+
+  /* segmented */
+  .segwrap{position:sticky;top:64px;z-index:25;padding:10px 16px;background:linear-gradient(180deg,rgba(10,15,12,.9),rgba(10,15,12,.72));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .seg{position:relative;display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px}
+  .seg button{flex:1;position:relative;z-index:2;background:none;border:none;color:var(--soft);font-family:var(--fu);font-weight:600;font-size:13.5px;padding:9px 0;cursor:pointer;transition:color .25s}
+  .seg button.on{color:#07120C}
+  .seg .ind{position:absolute;z-index:1;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);background:linear-gradient(160deg,#4ADB9C,#2AA871);border-radius:999px;transition:transform .35s var(--spring);box-shadow:0 4px 16px rgba(53,194,132,.4)}
+
+  .pane{display:none;padding:6px 16px 0}
+  .pane.on{display:block}
+  .pane.enter{animation:pin .38s var(--spring)}
+  @keyframes pin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+  /* quote + pépite */
+  .quote{font-family:var(--fd);font-style:italic;font-size:18.5px;line-height:1.3;color:#E5DFC9;margin:8px 2px 14px}
+  .quote span{color:var(--gold)}
+  .pepite{position:relative;margin:0 0 14px;border-radius:18px;padding:1px;background:linear-gradient(120deg,rgba(227,184,77,.75),rgba(227,184,77,.08) 40%,rgba(227,184,77,.55));background-size:220% 100%;animation:sheen 4.5s linear infinite}
+  @keyframes sheen{to{background-position:-220% 0}}
+  .pepite .in{background:linear-gradient(160deg,#1A2113,#121B15);border-radius:17px;padding:13px 14px}
+  .pepite .tag{font-family:var(--fm);font-size:10px;letter-spacing:.16em;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .pepite .txt{font-size:14px;line-height:1.45}
+  .pepite .txt b{color:var(--gold)}
+  .pepite .cta{margin-top:8px;font-size:12.5px;color:var(--soft);cursor:pointer}
+  .pepite .cta:active{color:var(--ink)}
+
+  /* rows */
+  .row{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:9px;overflow:hidden;transition:transform .16s var(--spring),border-color .25s;cursor:pointer;opacity:0;transform:translateY(14px)}
+  .row.in{opacity:1;transform:none;transition:opacity .5s ease,transform .5s var(--spring),border-color .25s}
+  .row:active{transform:scale(.98)}
+  .row.open{border-color:var(--line2);background:var(--card2)}
+  .row .top{display:flex;align-items:center;gap:11px;padding:12px 13px}
+  .n{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#0B231733;border:1px solid var(--turf-deep);color:var(--turf);font-family:var(--fm);font-weight:600;font-size:14px}
+  .hn{flex:1;min-width:0}
+  .hn b{display:block;font-size:15px;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hn span{font-size:11.5px;color:var(--dim)}
+  .cote{font-family:var(--fm);font-size:14px;font-weight:600;min-width:46px;text-align:right;transition:color .3s}
+  .cote small{display:block;font-size:9px;color:var(--dim);font-weight:400;letter-spacing:.08em}
+  .cote.up{color:var(--turf)} .cote.dn{color:var(--red)}
+  .badge{flex:none;font-size:10.5px;font-weight:700;letter-spacing:.05em;padding:4px 9px;border-radius:999px}
+  .b-fav{background:rgba(227,184,77,.14);color:var(--gold);border:1px solid rgba(227,184,77,.35)}
+  .b-base{background:rgba(53,194,132,.1);color:var(--turf);border:1px solid rgba(53,194,132,.3)}
+  .b-out{background:rgba(168,143,224,.12);color:var(--violet);border:1px solid rgba(168,143,224,.3)}
+  .b-sur{background:rgba(111,161,232,.12);color:var(--blue);border:1px solid rgba(111,161,232,.3)}
+  .b-ec{background:rgba(224,90,62,.1);color:var(--red);border:1px solid rgba(224,90,62,.3)}
+  .row .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--spring)}
+  .row.open .more{grid-template-rows:1fr}
+  .row .more>div{overflow:hidden}
+  .reason{font-size:13px;color:var(--soft);line-height:1.5;padding:0 14px 4px}
+  .bars{display:flex;gap:10px;padding:8px 14px 14px}
+  .bi{flex:1}
+  .bi .l{display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:.06em}
+  .bi .l b{color:var(--soft)}
+  .bar{height:4px;border-radius:99px;background:#0B1510;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#1F8A5C,#4ADB9C);transition:width .8s var(--spring)}
+  .row.open .bar i{width:var(--w)}
+
+  /* fiche pane */
+  .hpick{display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+  .hpick::-webkit-scrollbar{display:none}
+  .hp{flex:none;font-family:var(--fm);font-size:12.5px;font-weight:600;color:var(--soft);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer;transition:all .2s var(--spring)}
+  .hp.on{color:#07120C;background:linear-gradient(160deg,#4ADB9C,#2AA871);border-color:transparent}
+  .hp:active{transform:scale(.93)}
+  .fcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 14px;margin-bottom:10px}
+  .fl{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-top:1px dashed var(--line);font-size:13px}
+  .fl:first-child{border-top:none}
+  .fl .k{font-family:var(--fm);font-size:10px;letter-spacing:.12em;color:var(--dim)}
+  .fl .v{font-weight:600;text-align:right}
+  .fl .v small{display:block;font-weight:400;color:var(--dim);font-size:11px}
+  .tp{color:var(--turf)} .tn{color:var(--red)} .tw{color:var(--gold)}
+
+  /* mon prono card */
+  .game{display:flex;align-items:center;gap:12px;background:linear-gradient(140deg,#14202E,#101923);border:1px solid #23384D;border-radius:16px;padding:13px 14px;margin:4px 0 14px;cursor:pointer;transition:transform .15s var(--spring)}
+  .game:active{transform:scale(.97)}
+  .game .em{font-size:22px}
+  .game .t b{display:block;font-size:14px}
+  .game .t span{font-size:12px;color:var(--soft)}
+  .game .go{margin-left:auto;font-family:var(--fm);font-size:11px;color:var(--blue);white-space:nowrap}
+
+  /* arrival */
+  .arr{padding:14px 16px 0;text-align:center}
+  .arr .lab{font-family:var(--fm);font-size:10.5px;letter-spacing:.2em;color:var(--gold)}
+  .arr h2{font-family:var(--fd);font-size:26px;margin-top:6px}
+  .tiles{display:flex;justify-content:center;gap:9px;margin:18px 0 6px;perspective:600px}
+  .tile{width:52px;height:60px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:22px;font-weight:600;background:var(--card2);border:1px solid var(--line2);color:var(--ink);opacity:0}
+  .tile.win{background:linear-gradient(160deg,#F0CC6E,#C9992F);color:#141005;border-color:#F5DFA0;box-shadow:0 8px 30px rgba(227,184,77,.35)}
+  .tile.show{opacity:1}
+  .tile small{position:absolute;margin-top:52px;font-size:8.5px;letter-spacing:.1em;color:var(--dim)}
+  .replay{font-family:var(--fm);font-size:11.5px;color:var(--soft);background:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;margin:6px 0 14px}
+  .replay:active{transform:scale(.95)}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 16px 12px;overflow:hidden;text-align:left}
+  .vcard .h{font-size:12px;font-weight:700;letter-spacing:.05em;padding:9px 14px}
+  .vcard .h.g{background:rgba(227,184,77,.1);color:var(--gold)}
+  .vcard .h.t{background:rgba(53,194,132,.08);color:var(--turf)}
+  .vcard .b{padding:4px 14px 8px}
+  .vl{display:flex;justify-content:space-between;padding:8px 0;border-top:1px dashed var(--line);font-size:13px}
+  .vl:first-child{border-top:none}
+  .ok{color:var(--turf);font-weight:700;font-family:var(--fm);font-size:12.5px}
+  .mono{font-family:var(--fm);font-size:12.5px;color:var(--soft)}
+  .share{margin:2px 16px;display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px dashed var(--line2);border-radius:14px;padding:11px;font-size:13px;color:var(--soft);cursor:pointer}
+  .share:active{transform:scale(.98)}
+
+  /* FAB + nav */
+  .fab{position:absolute;right:14px;bottom:86px;z-index:40;display:flex;align-items:center;gap:9px;background:linear-gradient(140deg,rgba(38,68,110,.85),rgba(24,44,74,.85));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(111,161,232,.4);color:#EAF1FC;border-radius:999px;padding:12px 17px;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 14px 40px rgba(20,40,80,.5);transition:transform .16s var(--spring)}
+  .fab:active{transform:scale(.93)}
+  .fab .av{width:24px;height:24px;border-radius:50%;background:linear-gradient(160deg,#6FA1E8,#3D6DB5);display:flex;align-items:center;justify-content:center;font-size:13px}
+  .nav{position:absolute;left:0;right:0;bottom:0;z-index:40;display:flex;background:rgba(10,15,12,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:8px 0 20px}
+  .nav div{flex:1;text-align:center;font-size:10.5px;font-weight:600;color:var(--dim);cursor:pointer}
+  .nav div span{display:block;font-size:17px;margin-bottom:3px;filter:grayscale(1);opacity:.6;transition:all .2s}
+  .nav div.on{color:var(--turf)}
+  .nav div.on span{filter:none;opacity:1}
+
+  /* sheets */
+  .veil{position:absolute;inset:0;z-index:60;background:rgba(4,8,6,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s}
+  .veil.on{opacity:1;pointer-events:auto}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:70;background:linear-gradient(180deg,#131D16,#0E1611);border:1px solid var(--line2);border-bottom:none;border-radius:26px 26px 0 0;transform:translateY(105%);transition:transform .45s var(--spring);max-height:78%;display:flex;flex-direction:column}
+  .sheet.up{transform:none}
+  .grab{width:40px;height:4px;border-radius:99px;background:var(--line2);margin:10px auto 2px}
+  .sh-h{display:flex;align-items:center;gap:10px;padding:10px 18px 12px;border-bottom:1px solid var(--line)}
+  .sh-h .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(160deg,#6FA1E8,#3D6DB5);display:flex;align-items:center;justify-content:center;font-size:17px}
+  .sh-h b{font-size:15px;display:block}
+  .sh-h span{font-size:11.5px;color:var(--dim)}
+  .feed{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+  .feed::-webkit-scrollbar{display:none}
+  .bub{max-width:82%;padding:10px 13px;border-radius:16px;font-size:13.5px;line-height:1.5;animation:pin .3s var(--spring)}
+  .bub.me{align-self:flex-end;background:#1C3A2C;border:1px solid #2A5540;border-bottom-right-radius:5px}
+  .bub.bot{align-self:flex-start;background:var(--card2);border:1px solid var(--line2);border-bottom-left-radius:5px}
+  .bub.bot b{color:var(--gold)}
+  .typing{align-self:flex-start;display:flex;gap:4px;padding:12px 14px;background:var(--card2);border:1px solid var(--line2);border-radius:16px;border-bottom-left-radius:5px}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--soft);animation:ty 1s infinite}
+  .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+  @keyframes ty{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+  .chips{display:flex;gap:7px;overflow-x:auto;padding:10px 16px 6px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .qc{flex:none;font-size:12.5px;color:#C9D8EF;background:rgba(111,161,232,.1);border:1px solid rgba(111,161,232,.3);border-radius:999px;padding:8px 13px;cursor:pointer;transition:transform .15s var(--spring)}
+  .qc:active{transform:scale(.93)}
+  .inrow{display:flex;gap:8px;padding:8px 16px calc(16px + env(safe-area-inset-bottom))}
+  .inrow input{flex:1;background:var(--card);border:1px solid var(--line2);border-radius:999px;padding:11px 16px;color:var(--ink);font-family:var(--fu);font-size:13.5px;outline:none}
+  .inrow button{background:linear-gradient(160deg,#4ADB9C,#2AA871);border:none;border-radius:50%;width:42px;height:42px;font-size:16px;cursor:pointer;color:#07120C}
+
+  /* prono sheet */
+  .pgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:14px 18px}
+  .pn{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-weight:600;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:all .18s var(--spring)}
+  .pn:active{transform:scale(.88)}
+  .pn.pick{background:linear-gradient(160deg,#F0CC6E,#C9992F);color:#141005;border-color:#F5DFA0;transform:scale(1.06)}
+  .pfoot{padding:4px 18px calc(18px + env(safe-area-inset-bottom))}
+  .pfoot button{width:100%;padding:13px;border:none;border-radius:999px;font-family:var(--fu);font-weight:700;font-size:14.5px;background:var(--card2);color:var(--dim);transition:all .3s}
+  .pfoot button.ready{background:linear-gradient(160deg,#4ADB9C,#2AA871);color:#07120C;box-shadow:0 10px 30px rgba(53,194,132,.35);cursor:pointer}
+
+  /* toast */
+  .toast{position:absolute;left:50%;bottom:150px;transform:translate(-50%,20px);z-index:90;background:rgba(18,27,21,.95);border:1px solid var(--line2);backdrop-filter:blur(10px);color:var(--ink);font-size:12.5px;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:all .35s var(--spring);max-width:86%;text-align:center}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+
+  .foot{position:relative;z-index:2;text-align:center;font-family:var(--fm);font-size:9.5px;color:var(--dim);letter-spacing:.08em;padding:10px 0 14px}
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .row,.tile{opacity:1!important;transform:none!important}
+  }
+</style>
+
+<div class="device">
+  <div class="screen" id="screen">
+    <div class="glow g1"></div><div class="glow g2"></div>
+
+    <div class="hdr">
+      <div class="logo">Lcourse<i>.</i></div>
+      <div class="chip">🔥 <b>5</b> · 320 pts</div>
+    </div>
+
+    <div class="proof" onclick="toast('Track record complet : chaque prono publié, horodaté, vérifiable.')">
+      <span class="d"></span><span>Hier : <b>3/7 gagnants</b> en favori · <b>6/7 placés</b> · tout est public</span>
+    </div>
+
+    <div class="rail" id="rail">
+      <div class="rc done" data-v="arrival">C1<small>✓ 6·3·11</small></div>
+      <div class="rc" data-t="Dans l'app : la C2 en détail.">C2<small>✓ 2·9·4</small></div>
+      <div class="rc" data-t="Dans l'app : la C3 en détail.">C3<small>✓ 14·1·8</small></div>
+      <div class="rc live" data-v="course">C4<small>● 16:05</small></div>
+      <div class="rc skip" data-t="Bouba passe son tour sur la C5 : pas d'avis assez solide. On ne force jamais.">C5<small>passe</small></div>
+      <div class="rc" data-t="La C6 ouvre à 17:15. Notification quand la fiche est prête.">C6<small>17:15</small></div>
+      <div class="rc" data-t="La C7 ouvre à 17:50.">C7<small>17:50</small></div>
+    </div>
+
+    <!-- ═══ VUE COURSE ═══ -->
+    <div class="view on" id="v-course">
+      <div class="rhero">
+        <div class="rname">C4 · Prix des Tribunes</div>
+        <div class="rmeta">VINCENNES · TROT ATTELÉ · 2850 M · 16 PARTANTS · 85 000 €</div>
+        <div class="cdwrap">
+          <div class="cd" id="cd">départ dans 06:12</div>
+          <div class="lm">● MAJ 15:38 · non-partant : le 12</div>
+        </div>
+      </div>
+
+      <div class="segwrap">
+        <div class="seg">
+          <div class="ind" id="ind"></div>
+          <button class="on" data-p="verdict">Verdict</button>
+          <button data-p="raisons">Raisons</button>
+          <button data-p="fiche">Fiche</button>
+        </div>
+      </div>
+
+      <!-- Verdict -->
+      <div class="pane on" id="p-verdict">
+        <div class="quote">« Hermine domine sur le papier. Mais la vraie histoire, c'est <span>Kaline à 12 contre 1</span> : le modèle la voit deux fois mieux payée que son niveau réel. »</div>
+
+        <div class="pepite">
+          <div class="in">
+            <div class="tag">◆ PÉPITE DU JOUR · VALUE DÉTECTÉE</div>
+            <div class="txt"><b>Kaline des Baux (11)</b> : cote 12,0 · le modèle lui donne environ 15 % de chances, le marché n'en voit que 8 %.</div>
+            <div class="cta" onclick="askPreset(0);openBouba()">Demander pourquoi à Bouba →</div>
+          </div>
+        </div>
+
+        <div class="row" onclick="tRow(this)">
+          <div class="top"><span class="n">4</span><div class="hn"><b>HERMINE DU VIVIER</b><span>P. Lemarchand · 5 podiums sur 7</span></div><div class="cote" data-o="3.4">3,4<small>COTE</small></div><span class="badge b-fav">★ FAVORI</span></div>
+          <div class="more"><div><p class="reason">Cinq podiums sur ses sept dernières, à l'aise sur 2850 m, et le meilleur chrono du lot au kilomètre. Seule inconnue : jamais courue sur terrain lourd.</p>
+          <div class="bars"><div class="bi"><div class="l"><span>NOTE</span><b>74</b></div><div class="bar"><i style="--w:74%"></i></div></div><div class="bi"><div class="l"><span>FORME</span><b>88</b></div><div class="bar"><i style="--w:88%"></i></div></div><div class="bi"><div class="l"><span>APT</span><b>71</b></div><div class="bar"><i style="--w:71%"></i></div></div><div class="bi"><div class="l"><span>VIT</span><b>66</b></div><div class="bar"><i style="--w:66%"></i></div></div></div></div></div>
+        </div>
+
+        <div class="row" onclick="tRow(this)">
+          <div class="top"><span class="n">11</span><div class="hn"><b>KALINE DES BAUX</b><span>A. Sorel · 2 podiums sur 3 récents</span></div><div class="cote" data-o="12.0">12<small>COTE</small></div><span class="badge b-out">OUTSIDER</span></div>
+          <div class="more"><div><p class="reason">Deux podiums sur ses trois dernières, en progression constante, et la distance lui va. Le marché la sous-estime : c'est la value du jour.</p>
+          <div class="bars"><div class="bi"><div class="l"><span>NOTE</span><b>68</b></div><div class="bar"><i style="--w:68%"></i></div></div><div class="bi"><div class="l"><span>FORME</span><b>82</b></div><div class="bar"><i style="--w:82%"></i></div></div><div class="bi"><div class="l"><span>APT</span><b>77</b></div><div class="bar"><i style="--w:77%"></i></div></div><div class="bi"><div class="l"><span>VIT</span><b>61</b></div><div class="bar"><i style="--w:61%"></i></div></div></div></div></div>
+        </div>
+
+        <div class="row" onclick="tRow(this)">
+          <div class="top"><span class="n">7</span><div class="hn"><b>IDOLE DE RETZ</b><span>M. Delacour · régulière, sans éclat</span></div><div class="cote" data-o="5.8">5,8<small>COTE</small></div><span class="badge b-base">BASE</span></div>
+          <div class="more"><div><p class="reason">Toujours dans les cinq premiers cette saison. Peu de chances de gagner, beaucoup d'être placée : la colonne vertébrale d'un ticket.</p>
+          <div class="bars"><div class="bi"><div class="l"><span>NOTE</span><b>70</b></div><div class="bar"><i style="--w:70%"></i></div></div><div class="bi"><div class="l"><span>FORME</span><b>75</b></div><div class="bar"><i style="--w:75%"></i></div></div><div class="bi"><div class="l"><span>APT</span><b>80</b></div><div class="bar"><i style="--w:80%"></i></div></div><div class="bi"><div class="l"><span>VIT</span><b>58</b></div><div class="bar"><i style="--w:58%"></i></div></div></div></div></div>
+        </div>
+
+        <div class="row" onclick="tRow(this)">
+          <div class="top"><span class="n">2</span><div class="hn"><b>JAVA DU CLOSET</b><span>L. Bertin · retour de 3 mois d'absence</span></div><div class="cote" data-o="7.2">7,2<small>COTE</small></div><span class="badge b-base">BASE</span></div>
+          <div class="more"><div><p class="reason">Du niveau quand elle est prête, mais trois mois sans courir : l'engagement d'aujourd'hui ressemble à une rentrée préparée.</p>
+          <div class="bars"><div class="bi"><div class="l"><span>NOTE</span><b>66</b></div><div class="bar"><i style="--w:66%"></i></div></div><div class="bi"><div class="l"><span>FORME</span><b>54</b></div><div class="bar"><i style="--w:54%"></i></div></div><div class="bi"><div class="l"><span>APT</span><b>73</b></div><div class="bar"><i style="--w:73%"></i></div></div><div class="bi"><div class="l"><span>VIT</span><b>64</b></div><div class="bar"><i style="--w:64%"></i></div></div></div></div></div>
+        </div>
+
+        <div class="row" onclick="tRow(this)">
+          <div class="top"><span class="n">9</span><div class="hn"><b>LUTIN DES PLAINES</b><span>A. Collet · capable du meilleur et du pire</span></div><div class="cote" data-o="18.0">18<small>COTE</small></div><span class="badge b-sur">SURPRISE</span></div>
+          <div class="more"><div><p class="reason">Disqualifié deux fois sur ses quatre dernières, mais un vrai moteur quand il reste sage. À 18 contre 1, il paie le risque.</p>
+          <div class="bars"><div class="bi"><div class="l"><span>NOTE</span><b>58</b></div><div class="bar"><i style="--w:58%"></i></div></div><div class="bi"><div class="l"><span>FORME</span><b>62</b></div><div class="bar"><i style="--w:62%"></i></div></div><div class="bi"><div class="l"><span>APT</span><b>69</b></div><div class="bar"><i style="--w:69%"></i></div></div><div class="bi"><div class="l"><span>VIT</span><b>78</b></div><div class="bar"><i style="--w:78%"></i></div></div></div></div></div>
+        </div>
+
+        <div class="row" onclick="tRow(this)">
+          <div class="top"><span class="n">14</span><div class="hn"><b>HORTENSE DES LANDES</b><span>R. Maréchal · engagement trop dur</span></div><div class="cote" data-o="25.0">25<small>COTE</small></div><span class="badge b-ec">À ÉCARTER</span></div>
+          <div class="more"><div><p class="reason">Elle monte de catégorie et affronte plus fort qu'elle sur une distance qui ne l'avantage pas. Trop demandé aujourd'hui.</p>
+          <div class="bars"><div class="bi"><div class="l"><span>NOTE</span><b>49</b></div><div class="bar"><i style="--w:49%"></i></div></div><div class="bi"><div class="l"><span>FORME</span><b>57</b></div><div class="bar"><i style="--w:57%"></i></div></div><div class="bi"><div class="l"><span>APT</span><b>52</b></div><div class="bar"><i style="--w:52%"></i></div></div><div class="bi"><div class="l"><span>VIT</span><b>60</b></div><div class="bar"><i style="--w:60%"></i></div></div></div></div></div>
+        </div>
+
+        <div class="game" onclick="openProno()">
+          <div class="em">🎯</div>
+          <div class="t"><b>Ton prono avant celui de Bouba</b><span>Choisis ton tiercé · compare après l'arrivée</span></div>
+          <div class="go" id="gameGo">JOUER →</div>
+        </div>
+      </div>
+
+      <!-- Raisons -->
+      <div class="pane" id="p-raisons">
+        <div class="quote">« Le scénario : Hermine part vite et contrôle. Derrière, tout dépend du dernier tournant. »</div>
+        <div class="fcard">
+          <div class="fl"><span class="k">DÉPART</span><span class="v">Hermine (4) et Idole (7) devant<small>les deux meilleures partantes du lot</small></span></div>
+          <div class="fl"><span class="k">PARCOURS</span><span class="v">Kaline (11) cachée en 3e ligne<small>elle finit mieux qu'elle ne part</small></span></div>
+          <div class="fl"><span class="k">FINAL</span><span class="v tp">Le 11 déboule à la cadence<small>si le rythme est soutenu, elle plane</small></span></div>
+          <div class="fl"><span class="k">MÉTÉO</span><span class="v tw">Averses possibles vers 16h<small>terrain collant = bonus pour Kaline</small></span></div>
+        </div>
+        <div class="fcard">
+          <div class="fl"><span class="k">CE QUI VALIDERAIT</span><span class="v">Un 2850 m couru vite<small>ses deux podiums = courses rapides</small></span></div>
+          <div class="fl"><span class="k">CE QUI CASSERAIT</span><span class="v tn">Un faux rythme de tête<small>avantage aux leaders, Hermine gagne</small></span></div>
+        </div>
+      </div>
+
+      <!-- Fiche -->
+      <div class="pane" id="p-fiche">
+        <div class="hpick">
+          <div class="hp on" onclick="pick(this)">4 · Hermine</div>
+          <div class="hp" onclick="pick(this)">11 · Kaline</div>
+          <div class="hp" onclick="pick(this)">7 · Idole</div>
+          <div class="hp" onclick="pick(this)">2 · Java</div>
+        </div>
+        <div class="fcard">
+          <div class="fl"><span class="k">PALMARÈS</span><span class="v">31 courses · 14 top3<small>7 victoires · 45 % dans les trois</small></span></div>
+          <div class="fl"><span class="k">CHRONO</span><span class="v">1'12"8 au km<small>meilleur temps du lot sur la distance</small></span></div>
+          <div class="fl"><span class="k">FRAÎCHEUR</span><span class="v tp">21 jours · le bon tempo<small>3 podiums sur 4 dans cette fenêtre</small></span></div>
+          <div class="fl"><span class="k">DISTANCE</span><span class="v tp">2850 m · sa distance<small>9 courses ici · 6 podiums</small></span></div>
+          <div class="fl"><span class="k">HIPPODROME</span><span class="v">Vincennes · 12 courses<small>5 fois dans les trois</small></span></div>
+          <div class="fl"><span class="k">TERRAIN LOURD</span><span class="v tn">Jamais couru<small>la seule inconnue de son dossier</small></span></div>
+          <div class="fl"><span class="k">DRIVER</span><span class="v tw">P. Lemarchand · changement<small>1re fois avec elle · 18 % de réussite</small></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VUE ARRIVÉE ═══ -->
+    <div class="view" id="v-arrival">
+      <div class="arr">
+        <div class="lab">ARRIVÉE OFFICIELLE</div>
+        <h2>C1 · Prix du Plateau</h2>
+        <div class="tiles" id="tiles">
+          <div class="tile win">6<small>1ER</small></div>
+          <div class="tile">3<small>2E</small></div>
+          <div class="tile">11<small>3E</small></div>
+          <div class="tile">1<small>4E</small></div>
+          <div class="tile">9<small>5E</small></div>
+        </div>
+        <button class="replay" onclick="reveal()">↻ revoir la révélation</button>
+      </div>
+      <div class="vcard">
+        <div class="h g">★ CE QUE BOUBA AVAIT DIT CE MATIN</div>
+        <div class="b">
+          <div class="vl"><span>Favori · Quinoa du Parc (6)</span><span class="ok">1er · gagnant ✓</span></div>
+          <div class="vl"><span>Base · Ourasi Bleu (3)</span><span class="ok">2e · placé ✓</span></div>
+          <div class="vl"><span>Outsider · Perle Noire (11)</span><span class="ok">3e · placé ✓</span></div>
+          <div class="vl"><span>À écarter · Rafale d'Anjou (13)</span><span class="mono">9e</span></div>
+        </div>
+      </div>
+      <div class="vcard">
+        <div class="h t">BILAN DU JOUR · 3 COURSES JUGÉES</div>
+        <div class="b">
+          <div class="vl"><span>Favori</span><span class="mono"><b style="color:var(--ink)">2/3</b> gagnants · 3/3 placés</span></div>
+          <div class="vl"><span>Base</span><span class="mono"><b style="color:var(--ink)">3/3</b> placés</span></div>
+          <div class="vl"><span>Pépite value</span><span class="mono"><b style="color:var(--ink)">1</b> placée sur 2</span></div>
+        </div>
+      </div>
+      <div class="share" onclick="toast('Dans l’app : la carte bilan part sur WhatsApp en une image.')">📲 Partager le bilan sur WhatsApp</div>
+    </div>
+
+    <div class="foot">MAQUETTE INTERACTIVE · DONNÉES FICTIVES DE DÉMONSTRATION · ANALYSE ET STATISTIQUES · AUCUN PARI · 18+</div>
+  </div>
+
+  <button class="fab" id="fab" onclick="openBouba()"><span class="av">💬</span> Bouba</button>
+  <div class="nav">
+    <div class="on"><span>🏇</span>Aujourd'hui</div>
+    <div onclick="openBouba()"><span>💬</span>Bouba</div>
+    <div onclick="toast('Dans l’app : tous les bilans, la série complète, filtrable.')"><span>🏆</span>Résultats</div>
+    <div onclick="toast('Dans l’app : tes pronos, ta série, tes chevaux suivis.')"><span>👤</span>Moi</div>
+  </div>
+
+  <div class="veil" id="veil" onclick="closeSheets()"></div>
+
+  <!-- Sheet Bouba -->
+  <div class="sheet" id="shBouba">
+    <div class="grab"></div>
+    <div class="sh-h"><div class="av">💬</div><div><b>Bouba</b><span>répond avec les données de la course · jamais de conseil d'argent</span></div></div>
+    <div class="feed" id="feed">
+      <div class="bub bot">Pose-moi ta question sur la C4. Les cotes bougent, moi je regarde les chiffres.</div>
+    </div>
+    <div class="chips">
+      <div class="qc" onclick="askPreset(0)">Pourquoi Kaline en pépite ?</div>
+      <div class="qc" onclick="askPreset(1)">Compare le 4 et le 11</div>
+      <div class="qc" onclick="askPreset(2)">Et si le terrain est lourd ?</div>
+    </div>
+    <div class="inrow"><input id="freeQ" placeholder="Écris ta question…" onkeydown="if(event.key==='Enter')freeAsk()"><button onclick="freeAsk()">→</button></div>
+  </div>
+
+  <!-- Sheet Prono -->
+  <div class="sheet" id="shProno">
+    <div class="grab"></div>
+    <div class="sh-h"><div class="av" style="background:linear-gradient(160deg,#F0CC6E,#C9992F)">🎯</div><div><b>Ton tiercé de la C4</b><span>choisis 3 numéros · compare après l'arrivée</span></div></div>
+    <div class="pgrid" id="pgrid"></div>
+    <div class="pfoot"><button id="pOk" onclick="lockProno()">Choisis 3 numéros</button></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* rows entrance */
+  const io=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+  $$('.row').forEach((r,i)=>{r.style.transitionDelay=(i*45)+'ms';io.observe(r)});
+
+  /* countdown */
+  let s=372;
+  setInterval(()=>{
+    s=Math.max(0,s-1);
+    const m=String(Math.floor(s/60)).padStart(2,'0'),x=String(s%60).padStart(2,'0');
+    const cd=$('#cd'); cd.textContent='départ dans '+m+':'+x;
+    if(s<300)cd.classList.add('hot');
+  },1000);
+
+  /* live odds ticks */
+  if(!rm)setInterval(()=>{
+    const cs=$$('#p-verdict .cote'); const c=cs[Math.floor(Math.random()*cs.length)];
+    let o=parseFloat(c.dataset.o); const d=(Math.random()-.48)*(o>10?1.2:.3);
+    o=Math.max(1.5,Math.round((o+d)*10)/10); const up=o<parseFloat(c.dataset.o);
+    c.dataset.o=o; c.firstChild.textContent=(''+o).replace('.',',');
+    c.classList.remove('up','dn'); void c.offsetWidth; c.classList.add(up?'dn':'up');
+  },2600);
+
+  /* segmented */
+  $$('.seg button').forEach((b,i)=>b.addEventListener('click',()=>{
+    $$('.seg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    $('#ind').style.transform='translateX('+(i*100)+'%)';
+    $$('.pane').forEach(p=>p.classList.remove('on','enter'));
+    const p=$('#p-'+b.dataset.p); p.classList.add('on','enter');
+  }));
+
+  /* rows toggle */
+  function tRow(r){ r.classList.toggle('open'); }
+
+  /* fiche picker */
+  function pick(el){ $$('.hp').forEach(x=>x.classList.remove('on')); el.classList.add('on'); toast('Maquette : la fiche affichée reste celle d’Hermine. Dans l’app, chaque cheval a la sienne.'); }
+
+  /* views */
+  $('#rail').addEventListener('click',e=>{
+    const rc=e.target.closest('.rc'); if(!rc)return;
+    if(rc.dataset.v){ showView(rc.dataset.v); if(rc.dataset.v==='arrival')reveal(); }
+    else toast(rc.dataset.t);
+  });
+  function showView(v){
+    $$('.view').forEach(x=>x.classList.remove('on'));
+    $('#v-'+v).classList.add('on');
+    $('#screen').scrollTo({top:0,behavior:'instant'});
+    $('#fab').style.display = v==='course' ? 'flex' : 'none';
+  }
+
+  /* arrival reveal */
+  function reveal(){
+    const ts=$$('#tiles .tile');
+    ts.forEach(t=>{t.classList.remove('show');});
+    if(rm){ts.forEach(t=>t.classList.add('show'));return}
+    ts.forEach((t,i)=>{
+      setTimeout(()=>{
+        t.classList.add('show');
+        t.animate([{transform:'rotateX(90deg) translateY(-14px)',opacity:0},{transform:'rotateX(0) translateY(0)',opacity:1}],{duration:520,easing:'cubic-bezier(.34,1.4,.4,1)'});
+      },350+i*420);
+    });
+  }
+
+  /* sheets */
+  function openBouba(){ $('#veil').classList.add('on'); $('#shBouba').classList.add('up'); }
+  function openProno(){ $('#veil').classList.add('on'); $('#shProno').classList.add('up'); }
+  function closeSheets(){ $('#veil').classList.remove('on'); $$('.sheet').forEach(x=>x.classList.remove('up')); }
+
+  /* Bouba chat */
+  const QA=[
+    {q:'Pourquoi Kaline en pépite ?',a:'Le modèle lui donne environ <b>15 % de chances</b> ; à 12 contre 1, le marché n’en voit que 8 %. Cet écart, c’est la value : mieux payée que son vrai niveau. Ajoute 2 podiums sur ses 3 dernières et une distance qui lui va : dossier solide.'},
+    {q:'Compare le 4 et le 11',a:'<b>Hermine (4)</b> : la régularité, 5 podiums sur 7, meilleur chrono du lot. <b>Kaline (11)</b> : moins sûre, mieux payée, et la forme qui monte. En confiance pure : le 4. En rapport valeur : le 11. Les deux ne s’excluent pas.'},
+    {q:'Et si le terrain est lourd ?',a:'C’est LE scénario qui rebat les cartes : <b>Hermine n’a jamais couru lourd</b>, c’est son inconnue. Kaline a 2 podiums sur 3 sur terrain collant. Si les averses de 16h arrivent, son dossier grossit encore.'}
+  ];
+  function bubble(cls,html){ const b=document.createElement('div'); b.className='bub '+cls; b.innerHTML=html; $('#feed').appendChild(b); $('#feed').scrollTop=1e6; return b; }
+  function botReply(html){
+    const t=document.createElement('div'); t.className='typing'; t.innerHTML='<i></i><i></i><i></i>';
+    $('#feed').appendChild(t); $('#feed').scrollTop=1e6;
+    setTimeout(()=>{t.remove(); bubble('bot',html);}, rm?60:1000);
+  }
+  function askPreset(i){ bubble('me',QA[i].q); botReply(QA[i].a); }
+  function freeAsk(){
+    const v=$('#freeQ').value.trim(); if(!v)return; $('#freeQ').value='';
+    bubble('me',v);
+    botReply('Dans l’app finale je réponds à tout, avec les données de la course. Sur cette maquette, essaie une des questions suggérées 👇');
+  }
+
+  /* prono game */
+  const grid=$('#pgrid'); const picks=new Set();
+  for(let i=1;i<=16;i++){ if(i===12)continue; const d=document.createElement('div'); d.className='pn'; d.textContent=i;
+    d.onclick=()=>{ if(picks.has(i)){picks.delete(i);d.classList.remove('pick')} else if(picks.size<3){picks.add(i);d.classList.add('pick')}
+      const ok=$('#pOk'); ok.textContent = picks.size===3 ? 'Verrouiller mon tiercé '+[...picks].join('·') : 'Choisis '+(3-picks.size)+' numéro'+(picks.size===2?'':'s');
+      ok.classList.toggle('ready',picks.size===3); };
+    grid.appendChild(d); }
+  function lockProno(){ if(picks.size!==3)return; closeSheets();
+    $('#gameGo').textContent='✓ '+[...picks].join('·');
+    toast('Tiercé verrouillé avant Bouba. Rendez-vous après l’arrivée : +50 pts si tu le bats 🔥'); }
+
+  /* toast */
+  let tt;
+  function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2800); }
+</script>
