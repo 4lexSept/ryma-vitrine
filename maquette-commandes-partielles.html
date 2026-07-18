@@ -1,0 +1,563 @@
+<meta charset="utf-8">
+<title>Maquette : Commandes partielles (dashboard BM)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<style>
+  /* Charte EXACTE du dashboard Beauty Market (globals.css du repo). Produit clair uniquement. */
+  :root {
+    --bg: #faf7f8; --panel: #ffffff; --ink: #2b2026; --muted: #8a7a82; --line: #f1dde4;
+    --rose: #f5a1a8; --rose-hover: #ef8d96; --rose-deep: #c25762; --rose-tint: #fdeef0;
+    --rose-border: #f8cdd2; --ink-rose: #3d2b32;
+    --ok: #1f7a4d; --ok-tint: #dcfce7; --warn: #b7791f; --warn-tint: #fdf3e4;
+    --danger: #c0362c; --danger-tint: #fee2e2;
+    --shadow: 0 1px 2px rgba(61,43,50,.05), 0 10px 26px rgba(245,161,168,.16);
+    --radius: 12px;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible, a:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--rose-deep); outline-offset: 1px;
+  }
+
+  .demo-note { background: #3d2b32; color: #f6dfe3; font-size: 11.5px; letter-spacing: .02em; padding: 7px 14px; text-align: center; }
+  .demo-note b { color: #fff; font-weight: 650; }
+
+  .app { display: grid; grid-template-columns: 204px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); height: calc(100vh - 31px); min-height: 560px; }
+
+  /* Menu latéral (Shell simplifié, libellés réels) */
+  .shell { background: var(--panel); border-right: 1px solid var(--line); padding: 14px 10px; overflow-y: auto; }
+  .brand { display: flex; align-items: center; gap: 8px; padding: 2px 8px 14px; }
+  .brand-dot { width: 26px; height: 26px; border-radius: 50%; background: var(--rose); color: #fff; font-weight: 700; font-size: 12px; display: grid; place-items: center; }
+  .brand-name { font-weight: 650; font-size: 13px; }
+  .brand-sub { font-size: 10px; color: var(--muted); display: block; margin-top: -2px; }
+  .mi { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; border: 0; background: none; color: var(--ink); padding: 8px 10px; border-radius: 9px; font-size: 12.5px; margin-bottom: 1px; }
+  .mi svg { flex: none; opacity: .55; }
+  .mi:hover { background: var(--rose-tint); }
+  .mi.on { background: var(--rose-tint); color: var(--rose-deep); font-weight: 650; }
+  .mi.on svg { opacity: 1; }
+  .mi .b { margin-left: auto; background: var(--rose-deep); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 7px; }
+  .mi-sec { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); padding: 12px 10px 5px; }
+
+  .page { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .topbar { background: var(--panel); border-bottom: 1px solid var(--line); padding: 11px 16px 10px; }
+  .tb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tb-row h1 { font-size: 16px; margin: 0; font-weight: 700; }
+  .count-pill { background: var(--danger-tint); color: var(--danger); border: 1px solid #f3c1bc; font-size: 11.5px; font-weight: 650; border-radius: 999px; padding: 2px 10px; }
+  .btn { border: 1px solid var(--line); background: #fff; border-radius: 9px; padding: 6px 12px; font-size: 12px; color: var(--ink); }
+  .btn:hover { background: var(--rose-tint); border-color: var(--rose-border); }
+  .btn-file { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--rose-deep); }
+  .auto-lock { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; font-size: 11px; color: var(--muted); }
+  .auto-lock .sw { width: 26px; height: 15px; border-radius: 999px; background: #e8dfe3; position: relative; flex: none; }
+  .auto-lock .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 11px; height: 11px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.18); }
+  .tb-sub { font-size: 11.5px; color: var(--muted); margin: 6px 0 0; }
+  .tb-sub b { color: var(--ink); font-weight: 600; }
+
+  .cols { flex: 1; display: grid; grid-template-columns: 206px 332px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); min-height: 0; }
+
+  /* ── Rail : uniquement des entrées qui portent une tâche claire ── */
+  .rail { border-right: 1px solid var(--line); background: var(--panel); padding: 12px 8px; overflow-y: auto; }
+  .rf { display: flex; align-items: center; gap: 7px; width: 100%; border: 0; background: none; text-align: left; padding: 7px 9px; border-radius: 8px; font-size: 12px; color: var(--ink); margin-bottom: 1px; }
+  .rf:hover { background: var(--rose-tint); }
+  .rf.on { background: var(--rose-tint); color: var(--rose-deep); font-weight: 650; }
+  .rf .n { margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--muted); background: #f4eef1; border-radius: 999px; padding: 1px 7px; font-variant-numeric: tabular-nums; }
+  .rf.on .n { background: #fff; color: var(--rose-deep); }
+  .rf .n.hot { background: var(--danger-tint); color: var(--danger); }
+  .rail-sec { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); padding: 12px 9px 5px; }
+  .rail-sec.hot { color: var(--danger); }
+  .rail-hint { font-size: 10.5px; color: var(--muted); padding: 4px 9px 0; line-height: 1.45; }
+
+  /* ── Liste compacte ───────────────────────────────────────────── */
+  .list { border-right: 1px solid var(--line); background: #fbf8fa; overflow-y: auto; padding: 8px; }
+  .card { display: block; width: 100%; text-align: left; border: 1px solid transparent; background: none; border-radius: 10px; padding: 8px 10px; margin-bottom: 2px; }
+  .card:hover { background: #fff; border-color: var(--line); }
+  .card.sel { background: #fff; border-color: var(--rose-border); box-shadow: var(--shadow); }
+  .c1 { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .timer { flex: none; font-size: 10px; font-weight: 700; border-radius: 6px; padding: 1px 6px; font-variant-numeric: tabular-nums; }
+  .t-hum { background: var(--danger-tint); color: var(--danger); }
+  .t-ia { background: var(--rose-tint); color: var(--rose-deep); }
+  .t-mut { background: #f2eef0; color: var(--muted); }
+  .c1 .oid { font-weight: 650; font-size: 12.5px; flex: none; }
+  .c1 .who { color: var(--ink); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c2 { display: flex; align-items: center; gap: 8px; margin-top: 3px; min-width: 0; }
+  .c2 .art { font-size: 11.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c2 .art b { color: var(--ink); font-weight: 600; }
+  .tag { margin-left: auto; flex: none; font-size: 10px; font-weight: 650; border-radius: 999px; padding: 1px 8px; }
+  .tag-hum { background: var(--danger-tint); color: #b91c1c; }
+  .tag-ia { background: var(--rose-tint); color: var(--rose-deep); }
+  .tag-ok { background: var(--ok-tint); color: #15803d; }
+  .tag-mut { background: #e5e7eb; color: #4b5563; }
+  .list-sec { font-size: 10.5px; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 10px 8px 4px; }
+  .list-sec.hot { color: var(--danger); }
+  .list-empty { font-size: 12px; color: var(--muted); padding: 22px 14px; text-align: center; line-height: 1.55; }
+
+  /* ── Panneau ──────────────────────────────────────────────────── */
+  .panel { background: var(--panel); overflow-y: auto; min-width: 0; display: flex; flex-direction: column; }
+  .p-empty { flex: 1; display: grid; place-items: center; color: var(--muted); font-size: 13px; padding: 30px; text-align: center; }
+  .p-in { padding: 16px 20px 20px; max-width: 640px; }
+  .p-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .p-head h2 { font-size: 15px; margin: 0; font-weight: 700; }
+  .p-head .who { font-size: 13px; }
+  .p-head .tel { font-size: 12px; color: var(--rose-deep); text-decoration: none; }
+  .p-head .tel:hover { text-decoration: underline; }
+  .p-facts { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; }
+  .fact { background: #fbf8fa; border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; font-size: 11.5px; color: var(--muted); }
+  .fact b { color: var(--ink); font-weight: 600; }
+  .fact.rupture b { color: var(--danger); }
+  .p-note { margin: 12px 0 0; font-size: 12px; border-radius: 9px; padding: 8px 12px; }
+  .p-note.ia { background: var(--rose-tint); color: var(--ink-rose); border: 1px solid var(--rose-border); }
+  .p-note.mut { background: #fbf8fa; color: var(--muted); border: 1px solid var(--line); }
+  .p-note.hum { background: var(--danger-tint); color: #7a231c; border: 1px solid #f3c1bc; }
+  .p-note.hum b { color: #5f1b15; }
+  .p-lbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 16px 0 5px; }
+  textarea.msg { width: 100%; min-height: 118px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; font: 13px/1.55 inherit; background: #fbf8fa; color: var(--ink); }
+  textarea.msg:focus { background: #fff; border-color: var(--rose-border); }
+  .p-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .b-send { border: 0; border-radius: 9px; padding: 9px 16px; font-size: 13px; font-weight: 650; color: #fff; background: var(--danger); }
+  .b-send:hover { background: #a92e25; }
+  .b-sec { border: 1px solid var(--line); background: #fff; border-radius: 9px; padding: 8px 14px; font-size: 12.5px; }
+  .b-sec:hover { background: var(--rose-tint); border-color: var(--rose-border); }
+  .b-ign { border: 0; background: none; color: var(--muted); font-size: 12px; padding: 8px 6px; }
+  .b-ign:hover { color: var(--danger); }
+  .p-lock { margin-top: 14px; font-size: 11px; color: var(--muted); }
+
+  /* ── Conversation (bulles) ────────────────────────────────────── */
+  .sim { margin-top: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: #fbf8fa; padding: 14px; }
+  .sim-h { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
+  .sim-feed { display: flex; flex-direction: column; gap: 8px; }
+  .bub { max-width: 86%; border-radius: 12px; padding: 9px 12px; font-size: 12.5px; line-height: 1.55; white-space: pre-wrap; }
+  .bub-bot { align-self: flex-end; background: var(--rose-tint); border: 1px solid var(--rose-border); color: var(--ink-rose); border-bottom-right-radius: 4px; }
+  .bub-cli { align-self: flex-start; background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .bub-who { display: block; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 3px; }
+  .wa-btns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .wa-btn { background: #fff; border: 1px solid var(--rose-border); color: var(--rose-deep); font-size: 11.5px; font-weight: 600; border-radius: 8px; padding: 4px 10px; cursor: default; }
+  .sim-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .sim-chip { border: 1px dashed var(--rose-border); background: #fff; color: var(--rose-deep); font-size: 11.5px; border-radius: 999px; padding: 5px 12px; }
+  .sim-chip:hover { background: var(--rose-tint); }
+  .sim-esc { align-self: stretch; background: var(--danger-tint); border: 1px solid #f3c1bc; border-radius: 10px; padding: 9px 12px; font-size: 11.5px; color: #7a231c; }
+  .sim-esc b { color: #5f1b15; }
+  .sim-replay { border: 0; background: none; color: var(--rose-deep); font-size: 11.5px; text-decoration: underline; padding: 0; margin-top: 10px; }
+
+  /* ── Mode file ────────────────────────────────────────────────── */
+  .queue-bar { background: var(--ink-rose); color: #f6dfe3; padding: 9px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12px; }
+  .queue-bar[hidden] { display: none; }
+  .queue-bar b { color: #fff; }
+  .queue-bar .hint { opacity: .75; }
+  .queue-bar .quit { margin-left: auto; border: 1px solid rgba(255,255,255,.35); background: none; color: #fff; border-radius: 8px; padding: 4px 11px; font-size: 11.5px; }
+  .queue-bar .quit:hover { background: rgba(255,255,255,.12); }
+  body.file .rail, body.file .list { display: none; }
+  body.file .cols { grid-template-columns: minmax(0, 1fr); }
+
+  .toast { position: fixed; right: 16px; bottom: 16px; background: #3d2b32; color: #fff; font-size: 12.5px; border-radius: 10px; padding: 10px 16px; box-shadow: 0 8px 24px rgba(61,43,50,.35); opacity: 0; transform: translateY(6px); transition: opacity .18s, transform .18s; pointer-events: none; z-index: 60; }
+  .toast.show { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+
+  .p-back { display: none; }
+  @media (max-width: 920px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; min-height: calc(100vh - 31px); }
+    .shell { display: none; }
+    .cols { display: block; }
+    .rail { display: flex; gap: 4px; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 8px; }
+    .rail-sec, .rail-hint { display: none; }
+    .rf { width: auto; flex: none; }
+    .list { border-right: 0; }
+    .panel { display: none; }
+    body.psel .list, body.psel .rail { display: none; }
+    body.psel .panel { display: flex; }
+    .p-back { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--rose-deep); font-size: 12.5px; padding: 0 0 10px; }
+    body.file .queue-bar { position: sticky; top: 0; z-index: 10; }
+  }
+</style>
+
+<div class="demo-note"><b>Maquette de proposition</b> · données 100 % fictives · rien n'est branché au vrai dashboard</div>
+
+<div class="app">
+  <nav class="shell" aria-label="Menu principal (simplifié)">
+    <div class="brand">
+      <span class="brand-dot">BM</span>
+      <span><span class="brand-name">Beauty Market</span><span class="brand-sub">bm.ryma.app</span></span>
+    </div>
+    <button class="mi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg> Boîte de réception <span class="b">3</span></button>
+    <button class="mi on" aria-current="page"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg> Commandes partielles <span class="b" id="menuBadge">6</span></button>
+    <button class="mi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg> Archives</button>
+    <button class="mi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Clients</button>
+    <div class="mi-sec">Direction</div>
+    <button class="mi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Pilotage</button>
+    <button class="mi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> Facturation IA</button>
+  </nav>
+
+  <div class="page">
+    <header class="topbar">
+      <div class="tb-row">
+        <h1>Commandes partielles</h1>
+        <span class="count-pill" id="countPill">6 actions</span>
+        <button class="btn" id="btnScan">Vérifier maintenant</button>
+        <button class="btn btn-file" id="btnFile">Mode file<span id="fileCount"> · 6</span></button>
+        <span class="auto-lock" title="Une fois le système validé en phase de test, l'envoi pourra devenir automatique."><span class="sw" aria-hidden="true"></span> Envoi auto : verrouillé (phase de test)</span>
+      </div>
+      <p class="tb-sub"><b>Chaque ligne rouge = une tâche précise.</b> Une commande partielle apparaît ici à 24 h ouvrées (le week-end ne compte pas) avec son message prêt : avant, l'équipe peut encore la compléter. Aucun message ne part sans votre clic.</p>
+    </header>
+
+    <div class="queue-bar" id="queueBar" hidden>
+      <b>Mode file</b>
+      <span class="hint">D'abord les réponses des clientes, puis les messages à envoyer. Vous n'avez qu'à traiter.</span>
+      <span id="queuePos"></span>
+      <button class="quit" id="btnQuit">Quitter la file</button>
+    </div>
+
+    <div class="cols">
+      <aside class="rail" aria-label="Tâches">
+        <div class="rail-sec hot">Action humaine</div>
+        <button class="rf" data-f="send">Messages à envoyer <span class="n hot" id="nSend">3</span></button>
+        <button class="rf" data-f="remplacement">Remplacements à valider <span class="n hot" id="nRemp">1</span></button>
+        <button class="rf" data-f="envoi_partiel">Envois partiels à lancer <span class="n hot" id="nEnvp">1</span></button>
+        <button class="rf" data-f="annulation">Annulations à traiter <span class="n hot" id="nAnnul">1</span></button>
+        <div class="rail-hint">Cliquez une tâche pour filtrer, recliquez pour tout revoir.</div>
+        <div class="rail-sec">Cliente</div>
+        <button class="rf" data-f="ia">En attente de réponse <span class="n" id="nIa">2</span></button>
+        <div class="rail-sec">Terminé</div>
+        <button class="rf" data-f="arch">Archives par catégorie <span class="n" id="nArch">4</span></button>
+      </aside>
+
+      <section class="list" id="list" aria-label="Liste des commandes partielles"></section>
+
+      <section class="panel" id="panel">
+        <div class="p-empty" id="pEmpty">Sélectionnez une commande dans la liste.</div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  // ── Données de démonstration (fictives) ──────────────────────────
+  // Cycle de vie (décisions Alex 18/07) :
+  //   send = 24 h ouvrées dépassées, toujours partielle → message V5 prêt, À ENVOYER (rouge).
+  //          (Avant 24 h : la commande n'apparaît PAS ici, la détection tourne en silence.)
+  //   rep  = la cliente a répondu → une TÂCHE PRÉCISE par sous-catégorie (cat) :
+  //          remplacement / envoi_partiel / annulation. Reste dans CET onglet, jamais dans l'inbox.
+  //   ia   = message envoyé, en attente de la réponse de la cliente. Rien à faire.
+  //   arch = terminé, archivé PAR CATÉGORIE (remplacement / envoi_partiel / annulation / ignoree / completee).
+  const MSG = (p, o, a) => "Bonjour " + p + " 👋 Votre commande " + o + " est presque prête ! Un article — " + a + " — n'est pas disponible pour l'instant.\nComment préférez-vous faire ?\n1. Je remplace l'article\n2. M'envoyer ce qui est disponible";
+  const MSG_AR = (o, a) => "السلام 👋 الطلبية ديالك " + o + " تقريبا واجدة! غير منتج واحد — " + a + " — ماكاينش دابا.\nكيفاش بغيتي ندير؟\n1. نبدلو ليك المنتج\n2. نصيفطو ليك اللي كاين";
+
+  // Alternatives par CATÉGORIE de l'article bloquant (vrai produit : recherche produit search_products,
+  // même usage, prix proche, disponibles — spec partial_flow.md).
+  const ALTS = [
+    [/sérum|serum/i,       ["Sérum Hydra B5 La Roche-Posay : hydratation intense, 249 MAD", "Hydrating Serum CeraVe : peaux sensibles, 219 MAD"]],
+    [/crème|creme|baume/i, ["Cicaplast Baume B5+ La Roche-Posay : répare et apaise, 189 MAD", "Atoderm Crème Bioderma : nourrit les peaux sèches, 165 MAD"]],
+    [/eau thermale|brume/i, ["Eau Thermale La Roche-Posay 300 ml : apaise, 95 MAD", "Eau Thermale Uriage 300 ml : hydrate et protège, 89 MAD"]],
+    [/gel|nettoyant|moussant|douche/i, ["Gel Moussant Effaclar La Roche-Posay : peaux grasses, 179 MAD", "Foaming Cleanser CeraVe : nettoie sans dessécher, 169 MAD"]],
+    [/shampooing|shampoing/i, ["Shampooing Nodé Fluide Bioderma : usage fréquent, 145 MAD", "Shampooing Extra-Doux Ducray : cuir chevelu sensible, 139 MAD"]],
+    [/solaire|spf/i,       ["Photoderm SPF50+ Bioderma : haute protection, 199 MAD", "Bariésun SPF50+ Uriage : résiste à l'eau, 185 MAD"]],
+    [/huile/i,             ["Huile Lavante Lipikar La Roche-Posay : relipide, 210 MAD", "Huile de Douche Atoderm Bioderma : anti-dessèchement, 195 MAD"]],
+    [/masque/i,            ["Masque Hydratant Avène : hydratation intense, 155 MAD", "Masque Apaisant Uriage : peaux sensibles, 149 MAD"]],
+  ];
+  const alts = art => { for (const p of ALTS) { if (p[0].test(art)) return p[1]; } return ["Alternative du même rayon, disponible, prix proche", "Seconde alternative du même rayon, disponible"]; };
+
+  let orders = [
+    // MESSAGES À ENVOYER (24 h ouvrées dépassées)
+    { id: "#1291", nom: "Salma Bennis", tel: "+212661234501", art: "Sérum Vichy Minéral 89", st: "send", tl: "27 h ouvrées", lang: "fr" },
+    { id: "#1285", nom: "Ikram El Fassi", tel: "+212662234502", art: "Crème La Roche-Posay Lipikar AP+M", st: "send", tl: "25 h ouvrées", lang: "fr" },
+    { id: "#1297", nom: "Meryem Alaoui", tel: "+212663234503", art: "Eau thermale Avène 300 ml", st: "send", tl: "24 h ouvrées", lang: "darija" },
+    // TÂCHES (la cliente a répondu) : une sous-catégorie = une action précise
+    { id: "#1263", nom: "Amina Zerhouni", tel: "+212664234504", art: "Sérum Hyalu B5 La Roche-Posay", st: "rep", cat: "remplacement", tl: "réponse 45 min", lang: "fr",
+      todo: "Remplacer par Hydrating Serum CeraVe (219 MAD) : mettre à jour la commande dans Shopify, puis Marquer traité.",
+      conv: [["cli", "Je remplace l'article"], ["bot", "Avec plaisir ! Voici 2 alternatives disponibles, même usage et prix proche :\n1. Sérum Hydra B5 La Roche-Posay : hydratation intense, 249 MAD\n2. Hydrating Serum CeraVe : peaux sensibles, 219 MAD\n...ou n'importe quel autre produit du site, si vous avez une idée 🙂"], ["cli", "Le CeraVe alors"], ["bot", "Parfait, votre commande est complète et vous arrive bientôt 🌸"]] },
+    { id: "#1258", nom: "Loubna Kabbaj", tel: "+212665234505", art: "Gommage Nuxe Body", st: "rep", cat: "envoi_partiel", tl: "réponse 2 h", lang: "fr",
+      todo: "Envoyer la partie disponible : déclencher l'expédition dans Shopify, puis Marquer traité. Le gommage suivra dès son retour.",
+      conv: [["cli", "M'envoyer ce qui est disponible"], ["bot", "Parfait 🌸 On vous prépare et on vous envoie tout de suite ce qui est disponible — ça arrive bientôt. Gommage Nuxe Body suivra dès son retour."]] },
+    { id: "#1254", nom: "Houda Chraibi", tel: "+212666234506", art: "Gel Douche Lipikar La Roche-Posay", st: "rep", cat: "annulation", tl: "réponse 20 min", lang: "fr",
+      todo: "Annuler cet article dans la commande (paiement à la livraison : rien à facturer), libérer le reste pour l'envoi, puis Marquer traité.",
+      conv: [["cli", "Je préfère annuler"], ["bot", "Bien sûr. Vous préférez annuler uniquement Gel Douche Lipikar La Roche-Posay (le reste de la commande part alors normalement), ou toute la commande ?"], ["cli", "Juste l'article"], ["bot", "C'est noté. Rien ne vous sera facturé pour cet article (paiement à la livraison). Le reste de votre commande vous arrive bientôt 🌸"]] },
+    // EN ATTENTE DE RÉPONSE (l'IA a la main, la cliente n'a pas fini de répondre)
+    { id: "#1272", nom: "Chaimae Naciri", tel: "+212667234507", art: "Shampooing Ducray Anaphase+", st: "ia", tl: "envoyé 1 h", lang: "fr", conv: [] },
+    { id: "#1268", nom: "Kenza Berrada", tel: "+212668234508", art: "Masque Caudalie Vinergetic", st: "ia", tl: "envoyé 3 h", lang: "fr",
+      conv: [["cli", "Je remplace l'article"], ["bot", "Avec plaisir ! Voici 2 alternatives disponibles, même usage et prix proche :\n1. Masque Hydratant Avène : hydratation intense, 155 MAD\n2. Masque Apaisant Uriage : peaux sensibles, 149 MAD\n...ou n'importe quel autre produit du site, si vous avez une idée 🙂"]] },
+    // ARCHIVES (par catégorie)
+    { id: "#1276", nom: "Rim Squalli", tel: "+212669234509", art: "Baume Uriage Bariéderm", st: "arch", cat: "remplacement", tl: "hier", lang: "fr", fin: "Remplacée par Cicaplast Baume B5+, commande complétée et expédiée." },
+    { id: "#1249", nom: "Yasmina Alami", tel: "+212660234510", art: "Gommage Nuxe Body", st: "arch", cat: "envoi_partiel", tl: "hier", lang: "fr", fin: "Partie disponible expédiée, le gommage a suivi 3 jours après." },
+    { id: "#1281", nom: "Zineb Alami", tel: "+212661234511", art: "Dentifrice Elgydium blancheur", st: "arch", cat: "ignoree", tl: "hier", lang: "fr", fin: "Ignorée (doublon de commande)." },
+    { id: "#1245", nom: "Nour El Idrissi", tel: "+212662234512", art: "Crème solaire Anthelios SPF50+", st: "arch", cat: "completee", tl: "mardi", lang: "fr", fin: "L'équipe a complété la commande avant les 24 h : la cliente n'a jamais eu besoin d'être contactée." },
+  ];
+  orders.forEach(o => { o.msg = o.lang === "darija" ? MSG_AR(o.id, o.art) : MSG(o.nom.split(" ")[0], o.id, o.art); });
+
+  // ── Vue ──────────────────────────────────────────────────────────
+  // fEtat : null = toutes les actions humaines (défaut) · send / remplacement / envoi_partiel / annulation
+  //         = une seule tâche · ia = en attente de réponse · arch = archives par catégorie.
+  let fEtat = null, selId = null, fileMode = false;
+
+  const $ = id => document.getElementById(id);
+  const isAction = o => o.st === "send" || o.st === "rep";
+  const CAT_ORDER = { remplacement: 0, envoi_partiel: 1, annulation: 2 };
+  const sortActions = (a, b) => {
+    if (a.st !== b.st) return a.st === "rep" ? -1 : 1;                    // réponses avant messages
+    if (a.st === "rep") return CAT_ORDER[a.cat] - CAT_ORDER[b.cat];
+    return 0;
+  };
+  const pool = () => {
+    if (fEtat === null) return orders.filter(isAction).sort(sortActions);
+    if (fEtat === "send") return orders.filter(o => o.st === "send");
+    if (fEtat === "ia") return orders.filter(o => o.st === "ia");
+    if (fEtat === "arch") {
+      const AO = { remplacement: 0, envoi_partiel: 1, annulation: 2, ignoree: 3, completee: 4 };
+      return orders.filter(o => o.st === "arch").sort((a, b) => AO[a.cat] - AO[b.cat]);
+    }
+    return orders.filter(o => o.st === "rep" && o.cat === fEtat);
+  };
+  const queue = () => orders.filter(isAction).sort(sortActions);
+
+  function counts() {
+    const n = f => orders.filter(f).length;
+    const nSend = n(o => o.st === "send"), nRemp = n(o => o.st === "rep" && o.cat === "remplacement"),
+          nEnvp = n(o => o.st === "rep" && o.cat === "envoi_partiel"), nAnnul = n(o => o.st === "rep" && o.cat === "annulation");
+    $("nSend").textContent = nSend; $("nRemp").textContent = nRemp; $("nEnvp").textContent = nEnvp; $("nAnnul").textContent = nAnnul;
+    $("nIa").textContent = n(o => o.st === "ia"); $("nArch").textContent = n(o => o.st === "arch");
+    const total = nSend + nRemp + nEnvp + nAnnul;
+    $("countPill").textContent = total + (total > 1 ? " actions" : " action");
+    $("menuBadge").textContent = total;                    // pastille = actions humaines UNIQUEMENT
+    $("fileCount").textContent = total ? " · " + total : "";
+  }
+
+  // Libellés : le TAG de chaque carte dit la tâche (ou l'état), jamais deux tags.
+  const TAG = o =>
+    o.st === "send" ? '<span class="tag tag-hum">À envoyer</span>'
+    : o.st === "rep" ? '<span class="tag tag-hum">' + ({ remplacement: "Remplacement", envoi_partiel: "Envoi partiel", annulation: "Annulation" })[o.cat] + '</span>'
+    : o.st === "ia" ? '<span class="tag tag-ia">En attente</span>'
+    : o.cat === "ignoree" ? '<span class="tag tag-mut">Ignorée</span>'
+    : o.cat === "completee" ? '<span class="tag tag-ok">Complétée avant envoi</span>'
+    : '<span class="tag tag-ok">' + ({ remplacement: "Remplacement", envoi_partiel: "Envoi partiel", annulation: "Annulation" })[o.cat] + '</span>';
+  const tCls = o => isAction(o) ? "t-hum" : o.st === "ia" ? "t-ia" : "t-mut";
+  const SEC = o =>
+    o.st === "rep" ? [({ remplacement: "Remplacements à valider", envoi_partiel: "Envois partiels à lancer", annulation: "Annulations à traiter" })[o.cat], "hot"]
+    : o.st === "send" ? ["Messages à envoyer", "hot"]
+    : o.st === "ia" ? ["En attente de réponse de la cliente", ""]
+    : [({ remplacement: "Remplacements", envoi_partiel: "Envois partiels", annulation: "Annulations", ignoree: "Ignorées", completee: "Complétées avant envoi" })[o.cat], ""];
+
+  function renderList() {
+    const items = pool();
+    const el = $("list");
+    el.innerHTML = "";
+    if (!items.length) {
+      el.innerHTML = '<div class="list-empty">Rien ici pour le moment.<br>Une commande partielle apparaît à 24 h ouvrées avec son message prêt.</div>';
+      return;
+    }
+    let lastSec = "";
+    for (const o of items) {
+      const sec = SEC(o);
+      if (sec[0] !== lastSec) {
+        lastSec = sec[0];
+        const s = document.createElement("div");
+        s.className = "list-sec " + sec[1];
+        s.textContent = sec[0];
+        el.appendChild(s);
+      }
+      const b = document.createElement("button");
+      b.className = "card" + (o.id === selId ? " sel" : "");
+      b.innerHTML =
+        '<span class="c1"><span class="timer ' + tCls(o) + '">⏱ ' + o.tl + '</span>' +
+        '<span class="oid">' + o.id + '</span><span class="who">' + o.nom + '</span></span>' +
+        '<span class="c2"><span class="art">rupture : <b>' + o.art + '</b></span>' + TAG(o) + '</span>';
+      b.onclick = () => { selId = o.id; document.body.classList.add("psel"); render(); };
+      el.appendChild(b);
+    }
+  }
+
+  // ── Panneau : une commande = une tâche claire ────────────────────
+  function bubHtml(pair, prenom) {
+    const who = pair[0] === "cli" ? prenom : "Conseillère (auto)";
+    const cls = pair[0] === "cli" ? "bub-cli" : "bub-bot";
+    return '<div class="bub ' + cls + '"><span class="bub-who">' + who + '</span>' + pair[1].replace(/\n/g, "<br>") + '</div>';
+  }
+
+  function renderPanel() {
+    const o = orders.find(x => x.id === selId);
+    const el = $("panel");
+    if (!o) {
+      el.innerHTML = '<div class="p-empty">Sélectionnez une commande dans la liste.</div>';
+      return;
+    }
+    const first = o.nom.split(" ")[0];
+    const facts =
+      '<div class="p-facts">' +
+      '<span class="fact"><b>⏱ ' + o.tl + '</b></span>' +
+      '<span class="fact rupture">rupture : <b>' + o.art + '</b></span>' +
+      '<span class="fact">langue : <b>' + (o.lang === "darija" ? "darija" : "français") + '</b></span>' +
+      '</div>';
+    let corps = "";
+    if (o.st === "send") {
+      corps =
+        '<div class="p-lbl">Message prêt à relire (modifiable)</div>' +
+        '<textarea class="msg" id="aMsg" dir="' + (o.lang === "darija" ? "rtl" : "ltr") + '">' + o.msg + '</textarea>' +
+        '<div class="p-actions">' +
+        '<button class="b-send" id="aSend">Envoyer à la cliente</button>' +
+        '<button class="b-sec" id="aSim">Simuler la conversation</button>' +
+        '<button class="b-ign" id="aIgn">Ignorer</button>' +
+        '</div>' +
+        '<p class="p-lock">La commande est partielle depuis plus de 24 h ouvrées. Rien ne part sans votre clic.</p>' +
+        '<div id="simZone"></div>';
+    } else if (o.st === "rep") {
+      corps =
+        '<div class="p-note hum"><b>À faire : ' + o.todo + '</b></div>' +
+        '<div class="p-lbl">La conversation (menée par l\'IA)</div>' +
+        '<div class="sim"><div class="sim-feed">' +
+        bubHtml(["bot", o.msg], first) + o.conv.map(p => bubHtml(p, first)).join("") +
+        '</div></div>' +
+        '<div class="p-actions"><button class="b-send" id="aDoneRep">Marquer traité</button></div>' +
+        '<p class="p-lock">Cette tâche reste dans Commandes partielles (jamais dans la boîte de réception). Une fois traitée, elle part aux archives, dans sa catégorie.</p>';
+    } else if (o.st === "ia") {
+      corps =
+        '<div class="p-note ia">Message envoyé, la conseillère IA a la main. Dès que la cliente répond, la commande devient une tâche : remplacement, envoi partiel ou annulation.</div>' +
+        '<div class="p-lbl">La conversation en cours</div>' +
+        '<div class="sim"><div class="sim-feed">' +
+        bubHtml(["bot", o.msg], first) + o.conv.map(p => bubHtml(p, first)).join("") +
+        (o.conv.length ? "" : '<div class="bub bub-cli" style="opacity:.55"><span class="bub-who">' + first + '</span>Pas encore de réponse.</div>') +
+        '</div></div>';
+    } else {
+      corps = '<div class="p-note mut">' + (o.fin || "Traitée.") + '</div>';
+    }
+    el.innerHTML =
+      '<div class="p-in">' +
+      '<button class="p-back" id="aBack">← Retour à la liste</button>' +
+      '<div class="p-head"><h2>' + o.id + '</h2><span class="who">' + o.nom + '</span>' +
+      '<a class="tel" href="https://wa.me/' + o.tel.replace(/\D/g, "") + '" target="_blank" rel="noreferrer">' + o.tel + '</a></div>' +
+      facts + corps + '</div>';
+    if ($("aSend")) $("aSend").onclick = () => {
+      o.st = "ia"; o.tl = "envoyé maintenant"; o.conv = [];
+      toast("Message envoyé à " + first + " (démo). En attente de sa réponse.");
+      advance();
+    };
+    if ($("aDoneRep")) $("aDoneRep").onclick = () => {
+      o.st = "arch"; o.fin = "Traitée aujourd'hui (" + ({ remplacement: "remplacement validé", envoi_partiel: "envoi partiel lancé", annulation: "annulation faite" })[o.cat] + ").";
+      toast("Commande " + o.id + " traitée (démo). Archivée dans sa catégorie.");
+      advance();
+    };
+    if ($("aIgn"))  $("aIgn").onclick  = () => { o.st = "arch"; o.cat = "ignoree"; o.fin = "Ignorée (décision opératrice)."; toast("Commande " + o.id + " ignorée (démo)."); advance(); };
+    if ($("aSim"))  $("aSim").onclick  = () => simRender(o);
+    if ($("aMsg"))  $("aMsg").oninput  = e => { o.msg = e.target.value; };
+    if ($("aBack")) $("aBack").onclick = () => { document.body.classList.remove("psel"); selId = null; render(); };
+  }
+
+  // ── Simulation du flow V5 (spec partial_flow.md d'Alex) ─────────
+  function simRender(o) {
+    const z = $("simZone");
+    if (!z) return;
+    const first = o.nom.split(" ")[0];
+    const A = alts(o.art);
+    z.innerHTML = '<div class="sim"><p class="sim-h">Simulation du flow V5 (démo) : cliquez les réponses de la cliente</p>' +
+      '<div class="sim-feed" id="simFeed"></div><div class="sim-chips" id="simChips"></div>' +
+      '<button class="sim-replay" id="simReplay" hidden>Rejouer la simulation</button></div>';
+    const feed = $("simFeed"), chips = $("simChips");
+    function panScroll() {
+      const pn = z.closest(".panel");
+      if (pn) pn.scrollTop = pn.scrollHeight;
+    }
+    function bub(who, cls, txt, btns) {
+      const d = document.createElement("div");
+      d.className = "bub " + cls;
+      d.innerHTML = '<span class="bub-who">' + who + '</span>' + txt.replace(/\n/g, "<br>") +
+        (btns ? '<span class="wa-btns">' + btns.map(b => '<span class="wa-btn">' + b + '</span>').join("") + '</span>' : "");
+      feed.appendChild(d);
+      panScroll();
+    }
+    function setChips(list) {
+      chips.innerHTML = "";
+      list.forEach(pair => {
+        const b = document.createElement("button");
+        b.className = "sim-chip"; b.textContent = pair[0]; b.onclick = pair[1];
+        chips.appendChild(b);
+      });
+      panScroll();
+    }
+    function esc(dest) {
+      const d = document.createElement("div");
+      d.className = "sim-esc";
+      d.innerHTML = '<b>La commande devient une tâche : « ' + dest + ' »</b> dans CET onglet (jamais dans la boîte de réception). La dermoconseillère fait le geste dans Shopify puis Marque traité. Le bot ne touche jamais à Shopify.';
+      feed.appendChild(d);
+      chips.innerHTML = "";
+      $("simReplay").hidden = false;
+      $("simReplay").onclick = () => simRender(o);
+      panScroll();
+    }
+    function b1() {
+      bub(first, "bub-cli", "Je remplace l'article");
+      bub("Conseillère (auto)", "bub-bot", "Avec plaisir ! Voici 2 alternatives disponibles, même usage et prix proche :\n1. " + A[0] + "\n2. " + A[1] + "\n...ou n'importe quel autre produit du site, si vous avez une idée 🙂");
+      setChips([["Elle choisit la 1re alternative", function () {
+        bub(first, "bub-cli", "La première alors");
+        bub("Conseillère (auto)", "bub-bot", "Parfait, votre commande est complète et vous arrive bientôt 🌸");
+        esc("Remplacements à valider");
+      }]]);
+    }
+    function b2() {
+      bub(first, "bub-cli", "M'envoyer ce qui est disponible");
+      bub("Conseillère (auto)", "bub-bot", "Parfait 🌸 On vous prépare et on vous envoie tout de suite ce qui est disponible — ça arrive bientôt. " + o.art + " suivra dès son retour.");
+      esc("Envois partiels à lancer");
+    }
+    function b3() {
+      bub(first, "bub-cli", "Je préfère annuler");
+      bub("Conseillère (auto)", "bub-bot", "Bien sûr. Vous préférez annuler uniquement " + o.art + " (le reste de la commande part alors normalement), ou toute la commande ?");
+      setChips([
+        ["L'article seul", function () {
+          bub(first, "bub-cli", "Juste l'article");
+          bub("Conseillère (auto)", "bub-bot", "C'est noté. Rien ne vous sera facturé pour cet article (paiement à la livraison). Le reste de votre commande vous arrive bientôt 🌸");
+          esc("Annulations à traiter");
+        }],
+        ["Toute la commande", function () {
+          bub(first, "bub-cli", "Toute la commande");
+          bub("Conseillère (auto)", "bub-bot", "C'est noté, rien ne vous sera facturé (paiement à la livraison). Une personne de l'équipe s'en occupe tout de suite.");
+          esc("Annulations à traiter");
+        }],
+      ]);
+    }
+    bub("Conseillère (auto)", "bub-bot", o.msg, ["1. Je remplace", "2. Ce qui est dispo"]);
+    setChips([
+      ["Elle répond : 1. Je remplace l'article", b1],
+      ["Elle répond : 2. M'envoyer ce qui est disponible", b2],
+      ["Elle demande à annuler (jamais proposé en bouton)", b3],
+    ]);
+  }
+
+  function advance() {
+    if (fileMode) {
+      const q = queue();
+      if (q.length) { selId = q[0].id; }
+      else { fileMode = false; document.body.classList.remove("file"); $("queueBar").hidden = true; selId = null; toast("File terminée. Plus aucune action en attente."); document.body.classList.remove("psel"); }
+    } else { selId = null; document.body.classList.remove("psel"); }
+    render();
+  }
+
+  function render() {
+    counts(); renderList(); renderPanel();
+    document.querySelectorAll(".rf").forEach(b => b.classList.toggle("on", b.dataset.f === fEtat));
+    if (fileMode) {
+      const q = queue(), i = q.findIndex(x => x.id === selId);
+      $("queuePos").textContent = q.length ? "Action " + (i + 1) + " sur " + q.length : "";
+    }
+  }
+
+  // Cliquer une tâche filtre ; recliquer la même = retour à la vue « toutes les actions ».
+  document.querySelectorAll(".rf").forEach(b => b.onclick = () => {
+    fEtat = (fEtat === b.dataset.f) ? null : b.dataset.f;
+    selId = null; document.body.classList.remove("psel"); render();
+  });
+  $("btnFile").onclick = () => {
+    const q = queue();
+    if (!q.length) { toast("Aucune action en attente : la file est vide."); return; }
+    fileMode = true; document.body.classList.add("file"); $("queueBar").hidden = false;
+    selId = q[0].id; document.body.classList.add("psel"); render();
+  };
+  $("btnQuit").onclick = () => { fileMode = false; document.body.classList.remove("file", "psel"); $("queueBar").hidden = true; selId = null; render(); };
+  $("btnScan").onclick = () => toast("Vérification lancée (démo) : aucune nouvelle commande partielle.");
+
+  let toastT;
+  function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); }
+
+  render();
+</script>
