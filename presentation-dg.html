@@ -8,7 +8,6 @@
 <meta name="description" content="Une conseillère IA branchée sur vos catalogues : elle explique les produits, recommande, vend. Et un service client qui répond seul, 24h/24. Démonstration en ligne, chiffres vérifiables, sécurité détaillée pour vos équipes IT.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Ryma : le conseil produit et le service client par IA, sur vos enseignes">
-<meta property="og:url" content="https://4lexsept.github.io/ryma-vitrine/presentation-dg.html">
 <meta property="og:description" content="Testez la conseillère en 2 minutes sur une vraie boutique. Chiffres du marché vérifiables en un clic. Sécurité et données : les réponses pour vos équipes IT.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,13 +93,18 @@
   .typing span:nth-child(2){animation-delay:.18s}
   .typing span:nth-child(3){animation-delay:.36s}
   @keyframes tyDot{0%,100%{transform:translateY(0); opacity:.5}40%{transform:translateY(-4px); opacity:1}}
-  .prods{display:flex; gap:8px; margin:4px 0 10px}
-  .prod{flex:1; background:#fff; border:1px solid var(--line); border-radius:12px; padding:8px; font-size:12px; line-height:1.35; opacity:0; display:flex; flex-direction:column}
+  .prods{display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:auto auto auto auto; gap:8px; margin:4px 0 10px}
+  .prod{background:#fff; border:1px solid var(--line); border-radius:12px; padding:8px; font-size:12px; line-height:1.35; opacity:0; display:flex; flex-direction:column}
+  .prod .bt{margin-top:auto}
+  @supports (grid-template-rows: subgrid){
+    .prod{display:grid; grid-template-rows:subgrid; grid-row:span 4; align-content:start}
+    .prod .bt{margin-top:7px; align-self:end}
+  }
   .pimg{position:relative; border-radius:8px; overflow:hidden; background:#fff}
   .pimg img{display:block; width:100%; height:auto}
   .pbadge{position:absolute; top:6px; left:6px; background:#EAF3FB; color:#3D6C94; font-size:10px; font-weight:700; padding:2px 7px; border-radius:12px}
   .pbadge.promo{left:auto; right:6px; background:var(--rose-soft); color:var(--rose-dk)}
-  .prod .pn{font-weight:700; display:block; margin:7px 2px 3px; min-height:2.7em}
+  .prod .pn{font-weight:700; display:block; margin:7px 2px 3px}
   .prod .px{color:var(--rose-dk); font-weight:700; margin:0 2px}
   .prod .px s{color:var(--ink-soft); font-weight:400; margin-left:4px}
   .prod .bt{display:block; margin-top:7px; text-align:center; background:var(--rose-soft); color:var(--rose-dk); font-weight:700; font-size:11.5px; border-radius:20px; padding:5px 0}
@@ -280,8 +284,8 @@
     .cta{display:block; text-align:center}
     footer ul{columns:1}
     .two > .val{min-width:0}
-    .prods{flex-wrap:wrap}
-    .prod{flex:1 1 44%; min-width:0; overflow-wrap:anywhere}
+    .prods{grid-template-columns:repeat(2,1fr)}
+    .prod{min-width:0; overflow-wrap:anywhere}
   }
 </style>
 </head>
