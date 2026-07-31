@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Call Ryma — version relecture (notes bienvenues)</title>
+<title>Call Ryma — version relecture</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Une conseillère IA branchée sur vos catalogues : elle explique les produits, recommande, vend. Et un service client qui répond seul, 24h/24. Démonstration en ligne, chiffres vérifiables, sécurité détaillée pour vos équipes IT.">
 <meta property="og:type" content="website">
@@ -314,9 +314,10 @@ body{margin-top:34px}
 @media print{.coach{box-shadow:none;border:1px solid #999}.cbar{position:static}}
 </style>
 
+<meta name="robots" content="noindex, nofollow">
 </head>
 <body>
-<div class="cbar">📝 Version relecture — cliquez dans les cadres pointillés sous chaque encadré sombre pour noter vos remarques, puis « Copier toutes les notes » en bas à droite.</div>
+<div class="cbar"><span class="cbar-txt">📝 Écrivez vos remarques dans les cadres pointillés, sous chaque encadré sombre.</span><span class="cbar-btns"><button id="btn-save">💾 Sauvegarder</button><button id="btn-send">✉️ Envoyer à Alexandre</button></span></div>
 
 <div class="top">
   <div class="wrap">
@@ -866,15 +867,24 @@ body{margin-top:34px}
 <noscript><style>.convo :is(.b,.prod,.pan){animation:none !important; opacity:1 !important} .typing{display:none}</style></noscript>
 
 <style>
+.cbar{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:9px 14px !important}
+.cbar-txt{font-weight:600;letter-spacing:.02em}
+.cbar-btns{display:flex;gap:8px}
+.cbar button{border:none;border-radius:24px;padding:8px 16px;font-family:"DM Sans",system-ui,sans-serif;font-size:13.5px;font-weight:800;cursor:pointer}
+#btn-save{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45)}
+#btn-save:hover{background:rgba(255,255,255,.3)}
+#btn-send{background:#1E1B17;color:#F6EFE9}
+#btn-send:hover{background:#000}
+body{margin-top:52px !important}
 .note-zone{max-width:920px;margin:-18px auto 36px;background:#FFFDF9;border:2px dashed #DE8F84;border-radius:14px;min-height:64px;padding:14px 18px;font-family:"DM Sans",system-ui,sans-serif;font-size:15px;line-height:1.6;color:#1E1B17;cursor:text}
-.note-zone:empty::before{content:"✍️ Cliquez ici pour noter vos remarques sur cette partie…";color:#b09a94;font-style:italic}
+.note-zone:empty::before{content:"✍️ Écrivez ici vos remarques sur cette partie…";color:#b09a94;font-style:italic}
 .note-zone:focus{outline:2px solid #DE8F84}
-#notes-btn{position:fixed;bottom:18px;right:18px;z-index:9999;background:#1E1B17;color:#F6EFE9;border:none;border-radius:30px;padding:13px 20px;font-family:"DM Sans",system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 10px 26px rgba(30,27,23,.35)}
-#notes-btn:hover{background:#A05248}
+@media (max-width:700px){.cbar-txt{font-size:11px}}
 </style>
 <script>
 (function(){
   var KEY = "ryma-relecture-call-v1:";
+  var EMAIL = "alexandre.marchisio@gmail.com";
   document.querySelectorAll(".coach").forEach(function(c, i){
     var z = document.createElement("div");
     z.className = "note-zone"; z.contentEditable = "true"; z.dataset.nid = i;
@@ -885,9 +895,7 @@ body{margin-top:34px}
     });
     c.insertAdjacentElement("afterend", z);
   });
-  var btn = document.createElement("button");
-  btn.id = "notes-btn"; btn.textContent = "📋 Copier toutes les notes";
-  btn.addEventListener("click", function(){
+  function collect(){
     var out = [];
     document.querySelectorAll(".note-zone").forEach(function(z, i){
       var t = z.innerText.trim(); if (!t) return;
@@ -895,14 +903,30 @@ body{margin-top:34px}
       var tag = (c && c.querySelector(".ctag")) ? c.querySelector(".ctag").innerText.trim() : "Partie " + (i + 1);
       out.push("\u25a0 " + tag + "\n" + t);
     });
-    var txt = out.length ? ("Notes de relecture \u2014 call Ryma\n\n" + out.join("\n\n")) : "(aucune note saisie pour l'instant)";
-    var done = function(){ btn.textContent = "\u2713 Copié ! Collez-les dans un message à Alexandre"; setTimeout(function(){ btn.textContent = "\ud83d\udccb Copier toutes les notes"; }, 4500); };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(txt).then(done, function(){ dl(txt); });
-    } else { dl(txt); }
-    function dl(t){ var a = document.createElement("a"); a.href = "data:text/plain;charset=utf-8," + encodeURIComponent(t); a.download = "notes-relecture-call.txt"; a.click(); btn.textContent = "\u2713 Fichier de notes téléchargé"; setTimeout(function(){ btn.textContent = "\ud83d\udccb Copier toutes les notes"; }, 4500); }
+    return out;
+  }
+  var save = document.getElementById("btn-save");
+  save.addEventListener("click", function(){
+    document.querySelectorAll(".note-zone").forEach(function(z){
+      try { localStorage.setItem(KEY + z.dataset.nid, z.innerHTML); } catch(e){}
+    });
+    var old = save.textContent;
+    save.textContent = "\u2713 Sauvegardé sur cet ordinateur";
+    setTimeout(function(){ save.textContent = old; }, 3000);
   });
-  document.body.appendChild(btn);
+  var send = document.getElementById("btn-send");
+  send.addEventListener("click", function(){
+    var notes = collect();
+    if (!notes.length) { alert("Aucune note pour l'instant \u2014 écrivez d'abord dans les cadres pointillés, sous les encadrés sombres."); return; }
+    var txt = "Mes notes sur ta présentation \u2014 " + new Date().toLocaleDateString("fr-FR") + "\n\n" + notes.join("\n\n");
+    var subject = encodeURIComponent("Mes notes sur ta présentation Ryma");
+    if (txt.length < 1500) {
+      window.location.href = "mailto:" + EMAIL + "?subject=" + subject + "&body=" + encodeURIComponent(txt);
+    } else {
+      var go = function(){ window.location.href = "mailto:" + EMAIL + "?subject=" + subject + "&body=" + encodeURIComponent("Mes notes sont copiées \u2014 collez-les ici : appui long puis Coller, ou Cmd+V (Mac) / Ctrl+V (PC)."); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(go, go); } else { go(); }
+    }
+  });
 })();
 </script>
 </body>
