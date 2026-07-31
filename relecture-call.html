@@ -317,7 +317,7 @@ body{margin-top:34px}
 <meta name="robots" content="noindex, nofollow">
 </head>
 <body>
-<div class="cbar"><span class="cbar-txt">📝 Écrivez vos remarques dans les cadres pointillés, sous chaque encadré sombre.</span><span class="cbar-btns"><button id="btn-save">💾 Sauvegarder</button><button id="btn-send">✉️ Envoyer à Alexandre</button></span></div>
+<div class="cbar" id="topbar"><span class="cbar-txt" id="cbar-txt">📝 Écrivez vos remarques dans les cadres pointillés, sous chaque encadré sombre.</span><span class="cbar-btns"><button id="btn-save">💾 Sauvegarder</button><button id="btn-send">✅ J'ai terminé — envoyer à Alexandre</button></span></div>
 
 <div class="top">
   <div class="wrap">
@@ -869,63 +869,101 @@ body{margin-top:34px}
 <style>
 .cbar{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:9px 14px !important}
 .cbar-txt{font-weight:600;letter-spacing:.02em}
-.cbar-btns{display:flex;gap:8px}
-.cbar button{border:none;border-radius:24px;padding:8px 16px;font-family:"DM Sans",system-ui,sans-serif;font-size:13.5px;font-weight:800;cursor:pointer}
+.cbar-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.cbar button{border:none;border-radius:24px;padding:9px 18px;font-family:"DM Sans",system-ui,sans-serif;font-size:13.5px;font-weight:800;cursor:pointer}
 #btn-save{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45)}
 #btn-save:hover{background:rgba(255,255,255,.3)}
 #btn-send{background:#1E1B17;color:#F6EFE9}
 #btn-send:hover{background:#000}
-body{margin-top:52px !important}
-.note-zone{max-width:920px;margin:-18px auto 36px;background:#FFFDF9;border:2px dashed #DE8F84;border-radius:14px;min-height:64px;padding:14px 18px;font-family:"DM Sans",system-ui,sans-serif;font-size:15px;line-height:1.6;color:#1E1B17;cursor:text}
+body{margin-top:56px !important}
+.note-zone{max-width:920px;margin:-18px auto 36px;background:#FFFDF9;border:2px dashed #DE8F84;border-radius:14px;min-height:64px;padding:14px 18px;font-family:"DM Sans",system-ui,sans-serif;font-size:15px;line-height:1.6;color:#1E1B17;cursor:text;white-space:pre-wrap}
 .note-zone:empty::before{content:"✍️ Écrivez ici vos remarques sur cette partie…";color:#b09a94;font-style:italic}
 .note-zone:focus{outline:2px solid #DE8F84}
+.note-zone.filled{border-style:solid;background:#FDF3EF}
 @media (max-width:700px){.cbar-txt{font-size:11px}}
 </style>
 <script>
 (function(){
   var KEY = "ryma-relecture-call-v1:";
   var EMAIL = "alexandre.marchisio@gmail.com";
+  var zones = [];
   document.querySelectorAll(".coach").forEach(function(c, i){
     var z = document.createElement("div");
     z.className = "note-zone"; z.contentEditable = "true"; z.dataset.nid = i;
-    try { var saved = localStorage.getItem(KEY + i); if (saved) z.innerHTML = saved; } catch(e){}
+    try { var saved = localStorage.getItem(KEY + i); if (saved) z.textContent = saved; } catch(e){}
     z.addEventListener("input", function(){
       if (z.innerText.trim() === "") z.innerHTML = "";
-      try { localStorage.setItem(KEY + i, z.innerHTML); } catch(e){}
+      try { localStorage.setItem(KEY + i, z.innerText); } catch(e){}
     });
     c.insertAdjacentElement("afterend", z);
+    zones.push(z);
   });
-  function collect(){
-    var out = [];
-    document.querySelectorAll(".note-zone").forEach(function(z, i){
-      var t = z.innerText.trim(); if (!t) return;
-      var c = z.previousElementSibling;
-      var tag = (c && c.querySelector(".ctag")) ? c.querySelector(".ctag").innerText.trim() : "Partie " + (i + 1);
-      out.push("\u25a0 " + tag + "\n" + t);
-    });
+
+  function b64uEncode(bytes){
+    var bin = ""; bytes.forEach(function(b){ bin += String.fromCharCode(b); });
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64uDecode(str){
+    str = str.replace(/-/g, "+").replace(/_/g, "/"); while (str.length % 4) str += "=";
+    var bin = atob(str), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
     return out;
   }
-  var save = document.getElementById("btn-save");
-  save.addEventListener("click", function(){
-    document.querySelectorAll(".note-zone").forEach(function(z){
-      try { localStorage.setItem(KEY + z.dataset.nid, z.innerHTML); } catch(e){}
-    });
-    var old = save.textContent;
-    save.textContent = "\u2713 Sauvegardé sur cet ordinateur";
-    setTimeout(function(){ save.textContent = old; }, 3000);
-  });
-  var send = document.getElementById("btn-send");
-  send.addEventListener("click", function(){
-    var notes = collect();
-    if (!notes.length) { alert("Aucune note pour l'instant \u2014 écrivez d'abord dans les cadres pointillés, sous les encadrés sombres."); return; }
-    var txt = "Mes notes sur ta présentation \u2014 " + new Date().toLocaleDateString("fr-FR") + "\n\n" + notes.join("\n\n");
-    var subject = encodeURIComponent("Mes notes sur ta présentation Ryma");
-    if (txt.length < 1500) {
-      window.location.href = "mailto:" + EMAIL + "?subject=" + subject + "&body=" + encodeURIComponent(txt);
-    } else {
-      var go = function(){ window.location.href = "mailto:" + EMAIL + "?subject=" + subject + "&body=" + encodeURIComponent("Mes notes sont copiées \u2014 collez-les ici : appui long puis Coller, ou Cmd+V (Mac) / Ctrl+V (PC)."); };
-      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(go, go); } else { go(); }
+  function pump(stream){ return new Response(stream).arrayBuffer(); }
+
+  async function encodeNotes(obj){
+    var raw = new TextEncoder().encode(JSON.stringify(obj));
+    if (window.CompressionStream) {
+      var cs = new CompressionStream("deflate");
+      var buf = await pump(new Blob([raw]).stream().pipeThrough(cs));
+      return "c" + b64uEncode(new Uint8Array(buf));
     }
+    return "p" + b64uEncode(raw);
+  }
+  async function decodeNotes(payload){
+    var mode = payload[0], bytes = b64uDecode(payload.slice(1));
+    if (mode === "c") {
+      var ds = new DecompressionStream("deflate");
+      var buf = await pump(new Blob([bytes]).stream().pipeThrough(ds));
+      return JSON.parse(new TextDecoder().decode(buf));
+    }
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
+  // ── Mode lecture : la page ouverte avec #n=… affiche les corrections
+  if (location.hash.indexOf("#n=") === 0) {
+    decodeNotes(location.hash.slice(3)).then(function(notes){
+      var count = 0;
+      Object.keys(notes).forEach(function(k){
+        var z = zones[+k]; if (!z) return;
+        z.textContent = notes[k]; z.classList.add("filled"); count++;
+      });
+      var bar = document.getElementById("topbar");
+      bar.style.background = "#1E1B17";
+      document.getElementById("cbar-txt").textContent = "📖 " + count + " note(s) de relecture affichée(s) dans les cadres — sous les encadrés concernés.";
+      document.getElementById("btn-save").style.display = "none";
+      document.getElementById("btn-send").style.display = "none";
+      var first = document.querySelector(".note-zone.filled");
+      if (first) setTimeout(function(){ first.scrollIntoView({behavior:"smooth", block:"center"}); }, 600);
+    }).catch(function(){ alert("Ce lien de notes n'a pas pu être lu — demandez un nouvel envoi."); });
+  }
+
+  document.getElementById("btn-save").addEventListener("click", function(){
+    var b = this;
+    zones.forEach(function(z){ try { localStorage.setItem(KEY + z.dataset.nid, z.innerText); } catch(e){} });
+    var old = b.textContent; b.textContent = "✓ Sauvegardé sur cet ordinateur";
+    setTimeout(function(){ b.textContent = old; }, 3000);
+  });
+
+  document.getElementById("btn-send").addEventListener("click", async function(){
+    var notes = {};
+    zones.forEach(function(z){ var t = z.innerText.trim(); if (t) notes[z.dataset.nid] = t; });
+    if (!Object.keys(notes).length) { alert("Aucune note pour l'instant — écrivez d'abord dans les cadres pointillés, sous les encadrés sombres."); return; }
+    var payload = await encodeNotes(notes);
+    var link = location.origin + location.pathname + "#n=" + payload;
+    try { if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(link); } catch(e){}
+    var body = "Bonjour Alexandre,\n\nVoici mes notes sur ta présentation. Clique sur ce lien pour les voir directement dans la page, à leur place :\n\n" + link + "\n\n(Le lien est aussi copié — je peux te le renvoyer ailleurs si besoin.)";
+    location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Mes notes sur ta présentation Ryma") + "&body=" + encodeURIComponent(body);
   });
 })();
 </script>
